@@ -1,0 +1,6 @@
+-- SCHEMA: music
+
+-- DROP SCHEMA IF EXISTS music ;
+
+CREATE SCHEMA IF NOT EXISTS music
+    AUTHORIZATION ryandayrit;
