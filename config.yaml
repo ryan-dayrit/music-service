@@ -1,0 +1,7 @@
+database:
+  driver_name: postgres
+  user: ryandayrit
+  db_name: practice
+  ssl_mode: disable
+  password: aDhika!1931
+  host: localhost
