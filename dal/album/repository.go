@@ -1,6 +1,8 @@
 package album
 
 import (
+	_ "embed"
+
 	"github.com/jmoiron/sqlx"
 )
 
@@ -16,10 +18,13 @@ func NewAlbumRepository(db *sqlx.DB) AlbumRepository {
 	return &albumRepository{db: db}
 }
 
+//go:embed queries/get_albums.sql
+var getAlbumsQuery string
+
 func (r *albumRepository) Read() ([]Album, error) {
 	albums := []Album{}
 	album := Album{}
-	rows, _ := r.db.Queryx("SELECT id, title, artist, price FROM music.albums")
+	rows, _ := r.db.Queryx(getAlbumsQuery)
 	for rows.Next() {
 		err := rows.StructScan(&album)
 		if err != nil {

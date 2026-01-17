@@ -1,0 +1,1 @@
+SELECT id, title, artist, price FROM music.albums
