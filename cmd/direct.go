@@ -26,7 +26,7 @@ var directCmd = &cobra.Command{
 		}
 		defer db.Close()
 
-		repository := album.NewAlbumRepository(db)
+		repository := album.NewRepository(db)
 
 		albums, err := repository.Read()
 		if err != nil {

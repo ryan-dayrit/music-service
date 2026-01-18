@@ -34,6 +34,7 @@
   * https://grpc.io/docs/languages/go/basics/
   * https://bbengfort.github.io/2017/03/secure-grpc/
   * https://grpc.io/docs/guides/auth/
+  * https://github.com/sahansera/go-grpc
 
 ## Cobra CLI
   * https://www.jetbrains.com/guide/go/tutorials/cli-apps-go-cobra/creating_cli/
