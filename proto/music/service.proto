@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-option go_package = "album/service";
+option go_package = "pb/music";
 
 package service;
 
 import "models.proto";
 
-service AlbumService {
+service MusicService {
     rpc GetAlbums(GetAlbumsRequest) returns (GetAlbumsResponse) {};
 }

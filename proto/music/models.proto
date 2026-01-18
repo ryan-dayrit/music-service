@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "album/service";
+option go_package = "pb/music";
 
 package service;
 
