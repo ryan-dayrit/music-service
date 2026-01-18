@@ -3,7 +3,7 @@ package db
 import (
 	"fmt"
 
-	"postgres-crud/config"
+	"music-service/config"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"

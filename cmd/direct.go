@@ -5,9 +5,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"postgres-crud/config"
-	"postgres-crud/dal/album"
-	"postgres-crud/db"
+	"music-service/config"
+	"music-service/dal/album"
+	"music-service/db"
 )
 
 var directCmd = &cobra.Command{

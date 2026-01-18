@@ -9,10 +9,10 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"postgres-crud/config"
-	"postgres-crud/dal/album"
-	"postgres-crud/db"
-	pb "postgres-crud/gen/pb/music"
+	"music-service/config"
+	"music-service/dal/album"
+	"music-service/db"
+	pb "music-service/gen/pb/music"
 )
 
 type server struct {

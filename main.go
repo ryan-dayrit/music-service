@@ -1,6 +1,6 @@
 package main
 
-import "postgres-crud/cmd"
+import "music-service/cmd"
 
 func main() {
 	cmd.Execute()

@@ -2,7 +2,7 @@ GO      	:= go
 GOBUILD 	:= $(GO) build
 GOTEST  	:= $(GO) test
 GOCLEAN		:= $(GO) clean
-BINARY  	:= postgres-crud
+BINARY  	:= music-service
 GEN_FOLDER	:= gen
 
 .PHONY: all build test clean run

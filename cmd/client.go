@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	pb "postgres-crud/gen/pb/music"
+	pb "music-service/gen/pb/music"
 )
 
 var clientCmd = &cobra.Command{

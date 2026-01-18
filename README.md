@@ -7,6 +7,12 @@
 ## PostgreSQL
   * https://www.commandprompt.com/education/postgresql-list-all-tables/
 
+## GOPRIVATE 
+  * https://medium.com/@jasei/my-golang-experience-managing-multiple-private-repositories-with-github-and-docker-6d9f61452b81
+
+## replace in go.mod 
+  * https://thewebivore.com/using-replace-in-go-mod-to-point-to-your-local-module/
+  
 ## Golang Project structure
   * https://github.com/golang-standards/project-layout/tree/master
   * https://pkg.go.dev/github.com/loveyourstack/northwind
