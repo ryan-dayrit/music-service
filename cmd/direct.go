@@ -38,7 +38,3 @@ var directCmd = &cobra.Command{
 		}
 	},
 }
-
-func init() {
-	rootCmd.AddCommand(directCmd)
-}

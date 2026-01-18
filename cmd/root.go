@@ -13,3 +13,9 @@ func Execute() {
 		os.Exit(1)
 	}
 }
+
+func init() {
+	rootCmd.AddCommand(clientCmd)
+	rootCmd.AddCommand(directCmd)
+	rootCmd.AddCommand(serverCmd)
+}

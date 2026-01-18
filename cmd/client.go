@@ -23,14 +23,13 @@ var clientCmd = &cobra.Command{
 		defer conn.Close()
 
 		client := pb.NewMusicServiceClient(conn)
-		bookList, err := client.GetAlbumList(context.Background(), &pb.GetAlbumsRequest{})
+		getAlbumsResponse, err := client.GetAlbumList(context.Background(), &pb.GetAlbumsRequest{})
 		if err != nil {
-			log.Fatalf("failed to get albums: %v", err)
+			log.Fatalf("failed to get album list: %v", err)
 		}
-		log.Printf("albums: %v", bookList)
-	},
-}
 
-func init() {
-	rootCmd.AddCommand(clientCmd)
+		for _, v := range getAlbumsResponse.Albums {
+			log.Printf("%v\n", v)
+		}
+	},
 }

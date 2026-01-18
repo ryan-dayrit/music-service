@@ -9,6 +9,9 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
+	"postgres-crud/config"
+	"postgres-crud/dal/album"
+	"postgres-crud/db"
 	pb "postgres-crud/gen/pb/music"
 )
 
@@ -16,9 +19,10 @@ type server struct {
 	pb.UnimplementedMusicServiceServer
 }
 
-func (s *server) GetAlbums(context.Context, *pb.GetAlbumsRequest) (*pb.GetAlbumsResponse, error) {
+func (s *server) GetAlbumList(context.Context, *pb.GetAlbumsRequest) (*pb.GetAlbumsResponse, error) {
+	log.Println("request received")
 	return &pb.GetAlbumsResponse{
-		Albums: getAlbums(),
+		Albums: getAlbumList(),
 	}, nil
 }
 
@@ -41,18 +45,37 @@ var serverCmd = &cobra.Command{
 	},
 }
 
-func init() {
-	rootCmd.AddCommand(serverCmd)
-}
-
-func getAlbums() []*pb.Album {
-	albums := []*pb.Album{
-		{
-			Id:     1,
-			Title:  "Blue Train'",
-			Artist: "John Coltrane",
-			Price:  56.99,
-		},
+func getAlbumList() []*pb.Album {
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("Error loading config %v", err)
+		return nil
 	}
-	return albums
+
+	db, err := db.GetDB(*cfg)
+	if err != nil {
+		log.Fatalf("Error getting db: %v", err)
+		return nil
+	}
+	defer db.Close()
+
+	repository := album.NewRepository(db)
+
+	albums, err := repository.Read()
+	if err != nil {
+		log.Fatalf("Error reading albums: %v", err)
+		return nil
+	}
+
+	albumList := make([]*pb.Album, len(albums))
+	for i, v := range albums {
+		priceF64, _ := v.Price.Float64()
+		albumList[i] = &pb.Album{
+			Id:     int32(v.Id),
+			Title:  v.Title,
+			Artist: v.Artist,
+			Price:  float32(priceF64),
+		}
+	}
+	return albumList
 }
