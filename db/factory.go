@@ -3,10 +3,10 @@ package db
 import (
 	"fmt"
 
-	"github.com/ryan-dayrit/music-service/config"
-
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+
+	"github.com/ryan-dayrit/music-service/config"
 )
 
 func GetDB(cfg config.Config) (*sqlx.DB, error) {

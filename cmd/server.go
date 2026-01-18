@@ -12,7 +12,7 @@ import (
 	"github.com/ryan-dayrit/music-service/config"
 	"github.com/ryan-dayrit/music-service/dal/album"
 	"github.com/ryan-dayrit/music-service/db"
-	pb "github.com/ryan-dayrit/music-service/gen/pb/music"
+	"github.com/ryan-dayrit/music-service/gen/pb"
 )
 
 type server struct {
