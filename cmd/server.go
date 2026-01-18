@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"log"
 	"net"
 
@@ -13,18 +12,8 @@ import (
 	"github.com/ryan-dayrit/music-service/dal/album"
 	"github.com/ryan-dayrit/music-service/db"
 	"github.com/ryan-dayrit/music-service/gen/pb"
+	"github.com/ryan-dayrit/music-service/server"
 )
-
-type server struct {
-	pb.UnimplementedMusicServiceServer
-}
-
-func (s *server) GetAlbumList(context.Context, *pb.GetAlbumsRequest) (*pb.GetAlbumsResponse, error) {
-	log.Println("request received")
-	return &pb.GetAlbumsResponse{
-		Albums: getAlbumList(),
-	}, nil
-}
 
 var serverCmd = &cobra.Command{
 	Use:   "server",
@@ -38,44 +27,26 @@ var serverCmd = &cobra.Command{
 
 		s := grpc.NewServer()
 		reflection.Register(s)
-		pb.RegisterMusicServiceServer(s, &server{})
+
+		cfg, err := config.Load()
+		if err != nil {
+			log.Fatalf("failed to load config %v", err)
+			return
+		}
+
+		db, err := db.GetDB(*cfg)
+		if err != nil {
+			log.Fatalf("failed to get db: %v", err)
+			return
+		}
+		defer db.Close()
+
+		repository := album.NewRepository(db)
+		server := server.NewServer(repository)
+
+		pb.RegisterMusicServiceServer(s, server)
 		if err := s.Serve(listener); err != nil {
 			log.Fatalf("failed to serve: %v", err)
 		}
 	},
-}
-
-func getAlbumList() []*pb.Album {
-	cfg, err := config.Load()
-	if err != nil {
-		log.Fatalf("failed to load config %v", err)
-		return nil
-	}
-
-	db, err := db.GetDB(*cfg)
-	if err != nil {
-		log.Fatalf("failed to get db: %v", err)
-		return nil
-	}
-	defer db.Close()
-
-	repository := album.NewRepository(db)
-
-	albums, err := repository.Read()
-	if err != nil {
-		log.Fatalf("failed to read albums: %v", err)
-		return nil
-	}
-
-	albumList := make([]*pb.Album, len(albums))
-	for i, v := range albums {
-		priceF64, _ := v.Price.Float64()
-		albumList[i] = &pb.Album{
-			Id:     int32(v.Id),
-			Title:  v.Title,
-			Artist: v.Artist,
-			Price:  float32(priceF64),
-		}
-	}
-	return albumList
 }
