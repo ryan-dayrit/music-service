@@ -1,6 +1,12 @@
 package config
 
 type Config struct {
+	Service struct {
+		Network string `yaml:"network"`
+		Host    string `yaml:"host"`
+		Port    string `yaml:"port"`
+	} `yaml:"service"`
+
 	Database struct {
 		DriverName string `yaml:"driver_name"`
 		User       string `yaml:"user"`

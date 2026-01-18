@@ -13,7 +13,7 @@ import (
 var toolCmd = &cobra.Command{
 	Use:   "tool",
 	Short: "shows the albums",
-	Long:  `scans the postgres db directory and shows the albums`,
+	Long:  `queries the postgres db directly and shows the albums`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg, err := config.Load()
 		if err != nil {

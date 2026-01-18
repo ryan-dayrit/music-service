@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"net"
 
@@ -20,19 +21,20 @@ var serverCmd = &cobra.Command{
 	Short: "starts the gRPC server",
 	Long:  `starts the gRPC server which hosts MusicService which returns albums`,
 	Run: func(cmd *cobra.Command, args []string) {
-		listener, err := net.Listen("tcp", ":8080")
+		cfg, err := config.Load()
+		if err != nil {
+			log.Fatalf("failed to load config %v", err)
+			return
+		}
+
+		address := fmt.Sprintf(":%s", cfg.Service.Port)
+		listener, err := net.Listen(cfg.Service.Network, address)
 		if err != nil {
 			panic(err)
 		}
 
 		s := grpc.NewServer()
 		reflection.Register(s)
-
-		cfg, err := config.Load()
-		if err != nil {
-			log.Fatalf("failed to load config %v", err)
-			return
-		}
 
 		db, err := db.GetDB(*cfg)
 		if err != nil {
