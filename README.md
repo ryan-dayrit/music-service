@@ -1,6 +1,9 @@
 ## postgres-crud
   * practice Golang project for accessing data from a PostgreSQL database 
 
+## Makefile 
+  * https://tutorialedge.net/golang/makefiles-for-go-developers/
+
 ## PostgreSQL
   * https://www.commandprompt.com/education/postgresql-list-all-tables/
 
@@ -20,3 +23,9 @@
   * https://medium.com/@eikhapoetra/building-a-scalable-backend-with-the-repository-pattern-in-golang-4c30e735034c
   * https://medium.com/@rseanjustice/data-access-in-go-d39d8945b078
   * https://threedots.tech/post/database-transactions-in-go/
+
+## Protocol Buffers 
+  * https://grpc.io/docs/languages/go/basics/
+  * https://dev.to/davidsbond/golang-structuring-repositories-with-protocol-buffers-3012
+  * https://protobuf.dev/programming-guides/proto3/
+  * https://github.com/grpc/grpc-go/blob/master/examples/route_guide/routeguide/route_guide.proto

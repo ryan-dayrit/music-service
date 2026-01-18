@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+option go_package = "album/service";
+
+package service;
+
+import "models.proto";
+
+service AlbumService {
+    rpc GetAlbums(GetAlbumsRequest) returns (GetAlbumsResponse) {};
+}
