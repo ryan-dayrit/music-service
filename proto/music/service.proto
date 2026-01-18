@@ -7,5 +7,5 @@ package service;
 import "models.proto";
 
 service MusicService {
-    rpc GetAlbums(GetAlbumsRequest) returns (GetAlbumsResponse) {};
+    rpc GetAlbumList(GetAlbumsRequest) returns (GetAlbumsResponse) {};
 }
