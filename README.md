@@ -29,3 +29,14 @@
   * https://dev.to/davidsbond/golang-structuring-repositories-with-protocol-buffers-3012
   * https://protobuf.dev/programming-guides/proto3/
   * https://github.com/grpc/grpc-go/blob/master/examples/route_guide/routeguide/route_guide.proto
+
+## gRPC 
+  * https://grpc.io/docs/languages/go/basics/
+  * https://bbengfort.github.io/2017/03/secure-grpc/
+  * https://grpc.io/docs/guides/auth/
+
+## Cobra CLI
+  * https://www.jetbrains.com/guide/go/tutorials/cli-apps-go-cobra/creating_cli/
+  * https://www.digitalocean.com/community/tutorials/how-to-use-the-cobra-package-in-go
+  * https://cobra.dev/docs/tutorials/getting-started/
+  * https://github.com/mwiater/golangcliscaffold/tree/step3
