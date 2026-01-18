@@ -16,6 +16,6 @@ func Execute() {
 
 func init() {
 	rootCmd.AddCommand(clientCmd)
-	rootCmd.AddCommand(directCmd)
 	rootCmd.AddCommand(serverCmd)
+	rootCmd.AddCommand(toolCmd)
 }

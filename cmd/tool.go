@@ -10,8 +10,8 @@ import (
 	"github.com/ryan-dayrit/music-service/db"
 )
 
-var directCmd = &cobra.Command{
-	Use:   "direct",
+var toolCmd = &cobra.Command{
+	Use:   "tool",
 	Short: "shows the albums",
 	Long:  `scans the postgres db directory and shows the albums`,
 	Run: func(cmd *cobra.Command, args []string) {

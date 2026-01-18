@@ -28,8 +28,8 @@ func (s *server) GetAlbumList(context.Context, *pb.GetAlbumsRequest) (*pb.GetAlb
 
 var serverCmd = &cobra.Command{
 	Use:   "server",
-	Short: "starts the MusicService gRPC server",
-	Long:  `starts the MusicService gRPC which returns albums`,
+	Short: "starts the gRPC server",
+	Long:  `starts the gRPC server which hosts MusicService which returns albums`,
 	Run: func(cmd *cobra.Command, args []string) {
 		listener, err := net.Listen("tcp", ":8080")
 		if err != nil {
