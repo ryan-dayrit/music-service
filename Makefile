@@ -9,7 +9,7 @@ GEN_FOLDER	:= gen
 	
 all: run
 
-build: clean gen
+build: gen
 	$(GOBUILD) -o $(BINARY) .
 
 test:
@@ -25,7 +25,7 @@ run: build
 
 gen: clean
 	mkdir -p ${GEN_FOLDER}
-	protoc --proto_path=./proto/music --go_out=. --go-grpc_out . ./proto/music/models.proto ./proto/music/service.proto 
+	protoc --proto_path=./proto/music --go_out=. --go-grpc_out=. ./proto/music/models.proto ./proto/music/service.proto 
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
