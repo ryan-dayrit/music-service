@@ -2,14 +2,14 @@ GO      	:= go
 GOBUILD 	:= $(GO) build
 GOTEST  	:= $(GO) test
 GOCLEAN		:= $(GO) clean
-BINARY  	:= music-service
+BINARY  	:= bin/music-service
 GEN_FOLDER	:= gen
 
 .PHONY: all build test clean run
 	
-all: clean gen build
+all: run
 
-build:
+build: clean gen
 	$(GOBUILD) -o $(BINARY) .
 
 test:

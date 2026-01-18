@@ -3,7 +3,7 @@ package db
 import (
 	"fmt"
 
-	"music-service/config"
+	"github.com/ryan-dayrit/music-service/config"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"

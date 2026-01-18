@@ -9,10 +9,10 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"music-service/config"
-	"music-service/dal/album"
-	"music-service/db"
-	pb "music-service/gen/pb/music"
+	"github.com/ryan-dayrit/music-service/config"
+	"github.com/ryan-dayrit/music-service/dal/album"
+	"github.com/ryan-dayrit/music-service/db"
+	pb "github.com/ryan-dayrit/music-service/gen/pb/music"
 )
 
 type server struct {
@@ -40,7 +40,7 @@ var serverCmd = &cobra.Command{
 		reflection.Register(s)
 		pb.RegisterMusicServiceServer(s, &server{})
 		if err := s.Serve(listener); err != nil {
-			log.Fatalf("Failed to serve: %v", err)
+			log.Fatalf("failed to serve: %v", err)
 		}
 	},
 }
@@ -48,13 +48,13 @@ var serverCmd = &cobra.Command{
 func getAlbumList() []*pb.Album {
 	cfg, err := config.Load()
 	if err != nil {
-		log.Fatalf("Error loading config %v", err)
+		log.Fatalf("failed to load config %v", err)
 		return nil
 	}
 
 	db, err := db.GetDB(*cfg)
 	if err != nil {
-		log.Fatalf("Error getting db: %v", err)
+		log.Fatalf("failed to get db: %v", err)
 		return nil
 	}
 	defer db.Close()
@@ -63,7 +63,7 @@ func getAlbumList() []*pb.Album {
 
 	albums, err := repository.Read()
 	if err != nil {
-		log.Fatalf("Error reading albums: %v", err)
+		log.Fatalf("failed to read albums: %v", err)
 		return nil
 	}
 

@@ -1,6 +1,6 @@
 package main
 
-import "music-service/cmd"
+import "github.com/ryan-dayrit/music-service/cmd"
 
 func main() {
 	cmd.Execute()

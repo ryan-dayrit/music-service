@@ -5,9 +5,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"music-service/config"
-	"music-service/dal/album"
-	"music-service/db"
+	"github.com/ryan-dayrit/music-service/config"
+	"github.com/ryan-dayrit/music-service/dal/album"
+	"github.com/ryan-dayrit/music-service/db"
 )
 
 var directCmd = &cobra.Command{
@@ -17,12 +17,12 @@ var directCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg, err := config.Load()
 		if err != nil {
-			log.Fatalf("Error loading config %v", err)
+			log.Fatalf("failed to load config %v", err)
 		}
 
 		db, err := db.GetDB(*cfg)
 		if err != nil {
-			log.Fatalf("Error getting db: %v", err)
+			log.Fatalf("failed to get db: %v", err)
 		}
 		defer db.Close()
 
@@ -30,7 +30,7 @@ var directCmd = &cobra.Command{
 
 		albums, err := repository.Read()
 		if err != nil {
-			log.Fatalf("Error reading albums: %v", err)
+			log.Fatalf("failed to read albums: %v", err)
 		}
 
 		for _, v := range albums {
