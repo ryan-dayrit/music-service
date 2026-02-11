@@ -77,7 +77,7 @@ func TestServer_GetAlbumList_Success(t *testing.T) {
 	if resp.Albums[0].Artist != "John Coltrane" {
 		t.Errorf("Expected album[0] Artist 'John Coltrane', got '%s'", resp.Albums[0].Artist)
 	}
-	if resp.Albums[0].Price != 56.99 {
+	if resp.Albums[0].Price != float32(56.99) {
 		t.Errorf("Expected album[0] Price 56.99, got %f", resp.Albums[0].Price)
 	}
 
@@ -219,6 +219,8 @@ func TestServer_GetAlbumList_ContextHandling(t *testing.T) {
 	srv := NewServer(mockRepo)
 
 	req := &pb.GetAlbumsRequest{}
+	
+	// Test with valid contexts - should succeed
 	_, err := srv.GetAlbumList(context.Background(), req)
 	if err != nil {
 		t.Errorf("GetAlbumList() with Background context failed: %v", err)
@@ -229,11 +231,15 @@ func TestServer_GetAlbumList_ContextHandling(t *testing.T) {
 		t.Errorf("GetAlbumList() with TODO context failed: %v", err)
 	}
 
+	// Test with canceled context - should return error
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 	_, err = srv.GetAlbumList(ctx, req)
-	if err != nil {
-		t.Logf("GetAlbumList() with canceled context returned error: %v", err)
+	if err == nil {
+		t.Error("GetAlbumList() with canceled context should return error, got nil")
+	}
+	if err != context.Canceled {
+		t.Errorf("GetAlbumList() with canceled context should return context.Canceled, got: %v", err)
 	}
 }
 

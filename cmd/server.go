@@ -9,11 +9,11 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/ryan-dayrit/music-service/config"
-	"github.com/ryan-dayrit/music-service/dal/album"
-	"github.com/ryan-dayrit/music-service/db"
-	"github.com/ryan-dayrit/music-service/gen/pb"
-	"github.com/ryan-dayrit/music-service/server"
+	"music-service/config"
+	"music-service/dal/album"
+	"music-service/db"
+	"music-service/gen/pb"
+	"music-service/server"
 )
 
 var serverCmd = &cobra.Command{

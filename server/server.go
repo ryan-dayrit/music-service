@@ -19,13 +19,14 @@ func NewServer(repository album.Repository) pb.MusicServiceServer {
 	}
 }
 
-func (s *server) GetAlbumList(context.Context, *pb.GetAlbumsRequest) (*pb.GetAlbumsResponse, error) {
+func (s *server) GetAlbumList(ctx context.Context, req *pb.GetAlbumsRequest) (*pb.GetAlbumsResponse, error) {
 	log.Println("request received")
-	albums, err := getAlbumList(s.Repository)
-	if err != nil {
-		log.Printf("failed to get album list: %v", err)
+	
+	// Check if context is already canceled
+	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
+	
 	return &pb.GetAlbumsResponse{
 		Albums: albums,
 	}, nil
