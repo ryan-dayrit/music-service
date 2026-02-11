@@ -8,7 +8,7 @@ PROTO_FOLDER = proto/music
 
 BINARY  	:= bin/music-service
 
-.PHONY: all build test clean run
+.PHONY: all build test clean run gen
 	
 all: run
 
