@@ -80,11 +80,23 @@ database:
 
 func TestLoad_FileNotFound(t *testing.T) {
 	tempDir := t.TempDir()
-	originalDir, _ := os.Getwd()
-	defer os.Chdir(originalDir)
-	os.Chdir(tempDir)
+	
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get current working directory: %v", err)
+	}
 
-	_, err := Load()
+	if err := os.Chdir(tempDir); err != nil {
+		t.Fatalf("Failed to change working directory to tempDir: %v", err)
+	}
+
+	t.Cleanup(func() {
+		if err := os.Chdir(originalDir); err != nil {
+			t.Fatalf("Failed to restore original working directory: %v", err)
+		}
+	})
+
+	_, err = Load()
 	if err == nil {
 		t.Error("Expected error when config file doesn't exist, got nil")
 	}
@@ -106,9 +118,20 @@ func TestLoad_InvalidYAML(t *testing.T) {
 		t.Fatalf("Failed to create temp config file: %v", err)
 	}
 
-	originalDir, _ := os.Getwd()
-	defer os.Chdir(originalDir)
-	os.Chdir(tempDir)
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get current working directory: %v", err)
+	}
+
+	if err := os.Chdir(tempDir); err != nil {
+		t.Fatalf("Failed to change working directory to tempDir: %v", err)
+	}
+
+	t.Cleanup(func() {
+		if err := os.Chdir(originalDir); err != nil {
+			t.Fatalf("Failed to restore original working directory: %v", err)
+		}
+	})
 
 	_, err = Load()
 	if err == nil {
@@ -125,9 +148,20 @@ func TestLoad_EmptyConfig(t *testing.T) {
 		t.Fatalf("Failed to create temp config file: %v", err)
 	}
 
-	originalDir, _ := os.Getwd()
-	defer os.Chdir(originalDir)
-	os.Chdir(tempDir)
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get current working directory: %v", err)
+	}
+
+	if err := os.Chdir(tempDir); err != nil {
+		t.Fatalf("Failed to change working directory to tempDir: %v", err)
+	}
+
+	t.Cleanup(func() {
+		if err := os.Chdir(originalDir); err != nil {
+			t.Fatalf("Failed to restore original working directory: %v", err)
+		}
+	})
 
 	cfg, err := Load()
 	if err != nil {
