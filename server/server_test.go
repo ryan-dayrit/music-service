@@ -76,7 +76,7 @@ func TestServer_GetAlbumList_Success(t *testing.T) {
 	if resp.Albums[0].Artist != "John Coltrane" {
 		t.Errorf("Expected album[0] Artist 'John Coltrane', got '%s'", resp.Albums[0].Artist)
 	}
-	if resp.Albums[0].Price != 56.99 {
+	if resp.Albums[0].Price != float32(56.99) {
 		t.Errorf("Expected album[0] Price 56.99, got %f", resp.Albums[0].Price)
 	}
 
