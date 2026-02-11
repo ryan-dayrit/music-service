@@ -7,11 +7,9 @@ replace github.com/ryan-dayrit/music-service => /Users/ryandayrit/dev/go/music-s
 require (
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/lib/pq v1.10.9
-	github.com/ryan-dayrit/music-service v0.0.0-00010101000000-000000000000
 	github.com/shopspring/decimal v1.4.0
 	github.com/spf13/cobra v1.10.2
 	google.golang.org/grpc v1.78.0
-	google.golang.org/protobuf v1.36.11
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -22,4 +20,5 @@ require (
 	golang.org/x/sys v0.38.0 // indirect
 	golang.org/x/text v0.31.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251029180050-ab9386a59fda // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 )
