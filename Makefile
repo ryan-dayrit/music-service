@@ -2,10 +2,13 @@ GO      	:= go
 GOBUILD 	:= $(GO) build
 GOTEST  	:= $(GO) test
 GOCLEAN		:= $(GO) clean
-BINARY  	:= bin/music-service
-GEN_FOLDER	:= gen
 
-.PHONY: all build test clean run
+GEN_FOLDER	:= gen
+PROTO_FOLDER = proto/music
+
+BINARY  	:= bin/music-service
+
+.PHONY: all build test clean run gen
 	
 all: run
 
@@ -25,7 +28,4 @@ run: build
 
 gen: clean
 	mkdir -p ${GEN_FOLDER}
-	protoc --proto_path=./proto/music --go_out=. --go-grpc_out=. ./proto/music/models.proto ./proto/music/service.proto 
-
-help:
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
+	protoc --proto_path=${PROTO_FOLDER} --go_out=. --go-grpc_out=. ${PROTO_FOLDER}/models.proto ${PROTO_FOLDER}/service.proto 
