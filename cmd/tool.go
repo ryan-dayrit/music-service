@@ -5,9 +5,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ryan-dayrit/music-service/config"
-	"github.com/ryan-dayrit/music-service/dal/album"
-	"github.com/ryan-dayrit/music-service/db"
+	"music-service/config"
+	"music-service/dal/album"
+	"music-service/db"
 )
 
 var toolCmd = &cobra.Command{

@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ryan-dayrit/music-service/dal/album"
-	"github.com/ryan-dayrit/music-service/gen/pb"
+	"music-service/dal/album"
+	"music-service/gen/pb"
 	"github.com/shopspring/decimal"
 )
 
@@ -206,6 +206,8 @@ func TestServer_GetAlbumList_ContextHandling(t *testing.T) {
 	srv := NewServer(mockRepo)
 
 	req := &pb.GetAlbumsRequest{}
+	
+	// Test with valid contexts - should succeed
 	_, err := srv.GetAlbumList(context.Background(), req)
 	if err != nil {
 		t.Errorf("GetAlbumList() with Background context failed: %v", err)
@@ -216,11 +218,15 @@ func TestServer_GetAlbumList_ContextHandling(t *testing.T) {
 		t.Errorf("GetAlbumList() with TODO context failed: %v", err)
 	}
 
+	// Test with canceled context - should return error
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 	_, err = srv.GetAlbumList(ctx, req)
-	if err != nil {
-		t.Logf("GetAlbumList() with canceled context returned error: %v", err)
+	if err == nil {
+		t.Error("GetAlbumList() with canceled context should return error, got nil")
+	}
+	if err != context.Canceled {
+		t.Errorf("GetAlbumList() with canceled context should return context.Canceled, got: %v", err)
 	}
 }
 
