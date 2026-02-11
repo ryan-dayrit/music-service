@@ -2,7 +2,7 @@ module music-service
 
 go 1.25.5
 
-replace github.com/ryan-dayrit/music-service => /Users/ryandayrit/dev/go/music-service
+replace github.com/ryan-dayrit/music-service => ./
 
 require (
 	github.com/jmoiron/sqlx v1.4.0
