@@ -36,10 +36,8 @@ func TestRepository_Read_Integration(t *testing.T) {
 
 	albums, err := repo.Read()
 	if err != nil {
-		t.Logf("Read() returned error: %v", err)
-		return
+		t.Fatalf("Read() returned error: %v", err)
 	}
-
 	if albums == nil {
 		t.Error("Expected non-nil albums slice, got nil")
 	}
