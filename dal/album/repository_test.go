@@ -75,7 +75,6 @@ func TestRepository_Read_EmptyResult(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Read() returned unexpected error: %v", err)
 	}
-
 	if albums == nil {
 		t.Error("Expected non-nil albums slice, got nil")
 	}

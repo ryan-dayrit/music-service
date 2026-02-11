@@ -2,6 +2,8 @@ module github.com/ryan-dayrit/music-service
 
 go 1.25.5
 
+replace github.com/ryan-dayrit/music-service => ./
+
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/jmoiron/sqlx v1.4.0
