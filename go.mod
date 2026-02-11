@@ -1,13 +1,10 @@
-module music-service
+module github.com/ryan-dayrit/music-service
 
 go 1.25.5
-
-replace github.com/ryan-dayrit/music-service => /Users/ryandayrit/dev/go/music-service
 
 require (
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/lib/pq v1.10.9
-	github.com/ryan-dayrit/music-service v0.0.0-00010101000000-000000000000
 	github.com/shopspring/decimal v1.4.0
 	github.com/spf13/cobra v1.10.2
 	google.golang.org/grpc v1.78.0
@@ -16,6 +13,7 @@ require (
 )
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.2 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
 	golang.org/x/net v0.47.0 // indirect
