@@ -28,15 +28,14 @@ func (s *server) GetAlbumList(ctx context.Context, req *pb.GetAlbumsRequest) (*p
 	}
 	
 	return &pb.GetAlbumsResponse{
-		Albums: getAlbumList(s.Repository),
+		Albums: albums,
 	}, nil
 }
 
-func getAlbumList(repository album.Repository) []*pb.Album {
+func getAlbumList(repository album.Repository) ([]*pb.Album, error) {
 	albums, err := repository.Read()
 	if err != nil {
-		log.Fatalf("failed to read albums: %v", err)
-		return nil
+		return nil, err
 	}
 
 	albumList := make([]*pb.Album, len(albums))
@@ -49,5 +48,5 @@ func getAlbumList(repository album.Repository) []*pb.Album {
 			Price:  float32(priceF64),
 		}
 	}
-	return albumList
+	return albumList, nil
 }
