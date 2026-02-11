@@ -1,0 +1,130 @@
+package config
+
+import (
+	"os"
+	"path/filepath"
+	"testing"
+)
+
+func TestLoad_Success(t *testing.T) {
+	tempDir := t.TempDir()
+	configPath := filepath.Join(tempDir, "config.yaml")
+
+	configContent := []byte(`service:
+  network: tcp
+  host: localhost
+  port: "8080"
+
+database:
+  driver_name: postgres
+  user: testuser
+  db_name: testdb
+  ssl_mode: disable
+  password: testpass
+  host: localhost
+`)
+
+	err := os.WriteFile(configPath, configContent, 0644)
+	if err != nil {
+		t.Fatalf("Failed to create temp config file: %v", err)
+	}
+
+	originalDir, _ := os.Getwd()
+	defer os.Chdir(originalDir)
+	os.Chdir(tempDir)
+
+	cfg, err := Load()
+	if err != nil {
+		t.Fatalf("Load() failed: %v", err)
+	}
+
+	if cfg.Service.Network != "tcp" {
+		t.Errorf("Expected network 'tcp', got '%s'", cfg.Service.Network)
+	}
+	if cfg.Service.Host != "localhost" {
+		t.Errorf("Expected host 'localhost', got '%s'", cfg.Service.Host)
+	}
+	if cfg.Service.Port != "8080" {
+		t.Errorf("Expected port '8080', got '%s'", cfg.Service.Port)
+	}
+
+	if cfg.Database.DriverName != "postgres" {
+		t.Errorf("Expected driver_name 'postgres', got '%s'", cfg.Database.DriverName)
+	}
+	if cfg.Database.User != "testuser" {
+		t.Errorf("Expected user 'testuser', got '%s'", cfg.Database.User)
+	}
+	if cfg.Database.DBName != "testdb" {
+		t.Errorf("Expected db_name 'testdb', got '%s'", cfg.Database.DBName)
+	}
+	if cfg.Database.SSLMode != "disable" {
+		t.Errorf("Expected ssl_mode 'disable', got '%s'", cfg.Database.SSLMode)
+	}
+	if cfg.Database.Password != "testpass" {
+		t.Errorf("Expected password 'testpass', got '%s'", cfg.Database.Password)
+	}
+	if cfg.Database.Host != "localhost" {
+		t.Errorf("Expected database host 'localhost', got '%s'", cfg.Database.Host)
+	}
+}
+
+func TestLoad_FileNotFound(t *testing.T) {
+	tempDir := t.TempDir()
+	originalDir, _ := os.Getwd()
+	defer os.Chdir(originalDir)
+	os.Chdir(tempDir)
+
+	_, err := Load()
+	if err == nil {
+		t.Error("Expected error when config file doesn't exist, got nil")
+	}
+}
+
+func TestLoad_InvalidYAML(t *testing.T) {
+	tempDir := t.TempDir()
+	configPath := filepath.Join(tempDir, "config.yaml")
+
+	invalidYAML := []byte(`service:
+  network: tcp
+  host: localhost
+  port: "8080"
+  invalid yaml content: [[[
+`)
+
+	err := os.WriteFile(configPath, invalidYAML, 0644)
+	if err != nil {
+		t.Fatalf("Failed to create temp config file: %v", err)
+	}
+
+	originalDir, _ := os.Getwd()
+	defer os.Chdir(originalDir)
+	os.Chdir(tempDir)
+
+	_, err = Load()
+	if err == nil {
+		t.Error("Expected error when parsing invalid YAML, got nil")
+	}
+}
+
+func TestLoad_EmptyConfig(t *testing.T) {
+	tempDir := t.TempDir()
+	configPath := filepath.Join(tempDir, "config.yaml")
+
+	err := os.WriteFile(configPath, []byte(""), 0644)
+	if err != nil {
+		t.Fatalf("Failed to create temp config file: %v", err)
+	}
+
+	originalDir, _ := os.Getwd()
+	defer os.Chdir(originalDir)
+	os.Chdir(tempDir)
+
+	cfg, err := Load()
+	if err != nil {
+		t.Fatalf("Load() failed with empty config: %v", err)
+	}
+
+	if cfg == nil {
+		t.Error("Expected non-nil config, got nil")
+	}
+}
