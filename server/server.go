@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 
-	"github.com/ryan-dayrit/music-service/dal/album"
-	"github.com/ryan-dayrit/music-service/gen/pb"
+	"music-service/dal/album"
+	"music-service/gen/pb"
 )
 
 type server struct {
@@ -21,16 +21,20 @@ func NewServer(repository album.Repository) pb.MusicServiceServer {
 
 func (s *server) GetAlbumList(context.Context, *pb.GetAlbumsRequest) (*pb.GetAlbumsResponse, error) {
 	log.Println("request received")
+	albums, err := getAlbumList(s.Repository)
+	if err != nil {
+		log.Printf("failed to get album list: %v", err)
+		return nil, err
+	}
 	return &pb.GetAlbumsResponse{
-		Albums: getAlbumList(s.Repository),
+		Albums: albums,
 	}, nil
 }
 
-func getAlbumList(repository album.Repository) []*pb.Album {
+func getAlbumList(repository album.Repository) ([]*pb.Album, error) {
 	albums, err := repository.Read()
 	if err != nil {
-		log.Fatalf("failed to read albums: %v", err)
-		return nil
+		return nil, err
 	}
 
 	albumList := make([]*pb.Album, len(albums))
@@ -43,5 +47,5 @@ func getAlbumList(repository album.Repository) []*pb.Album {
 			Price:  float32(priceF64),
 		}
 	}
-	return albumList
+	return albumList, nil
 }

@@ -2,10 +2,11 @@ package server
 
 import (
 	"context"
+	"errors"
 	"testing"
 
-	"github.com/ryan-dayrit/music-service/dal/album"
-	"github.com/ryan-dayrit/music-service/gen/pb"
+	"music-service/dal/album"
+	"music-service/gen/pb"
 	"github.com/shopspring/decimal"
 )
 
@@ -118,7 +119,7 @@ func TestGetAlbumList_Function(t *testing.T) {
 		mockAlbums    []album.Album
 		mockError     error
 		expectedCount int
-		shouldPanic   bool
+		expectError   bool
 	}{
 		{
 			name: "Single album",
@@ -132,14 +133,21 @@ func TestGetAlbumList_Function(t *testing.T) {
 			},
 			mockError:     nil,
 			expectedCount: 1,
-			shouldPanic:   false,
+			expectError:   false,
 		},
 		{
 			name:          "Empty album list",
 			mockAlbums:    []album.Album{},
 			mockError:     nil,
 			expectedCount: 0,
-			shouldPanic:   false,
+			expectError:   false,
+		},
+		{
+			name:          "Repository error",
+			mockAlbums:    nil,
+			mockError:     errors.New("database connection failed"),
+			expectedCount: 0,
+			expectError:   true,
 		},
 	}
 
@@ -151,20 +159,21 @@ func TestGetAlbumList_Function(t *testing.T) {
 				},
 			}
 
-			if tt.shouldPanic {
-				defer func() {
-					if r := recover(); r == nil {
-						t.Log("Note: log.Fatalf causes os.Exit, can't be caught in tests")
-					}
-				}()
+			result, err := getAlbumList(mockRepo)
+
+			if tt.expectError {
+				if err == nil {
+					t.Error("Expected error, got nil")
+				}
+				return
 			}
 
-			result := getAlbumList(mockRepo)
+			if err != nil {
+				t.Errorf("Unexpected error: %v", err)
+			}
 
-			if !tt.shouldPanic {
-				if len(result) != tt.expectedCount {
-					t.Errorf("Expected %d albums, got %d", tt.expectedCount, len(result))
-				}
+			if len(result) != tt.expectedCount {
+				t.Errorf("Expected %d albums, got %d", tt.expectedCount, len(result))
 			}
 		})
 	}
@@ -184,7 +193,11 @@ func TestGetAlbumList_PriceConversion(t *testing.T) {
 		},
 	}
 
-	result := getAlbumList(mockRepo)
+	result, err := getAlbumList(mockRepo)
+
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
 
 	if len(result) != 1 {
 		t.Fatalf("Expected 1 album, got %d", len(result))
