@@ -5,8 +5,8 @@ service:
 
 database:
   driver_name: postgres
-  user: ryandayrit
+  user: postgres
   db_name: practice
   ssl_mode: disable
-  password: aDhika!1931
+  password: umagos
   host: localhost
