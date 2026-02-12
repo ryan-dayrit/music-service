@@ -1,6 +1,13 @@
 # music-service
 practice Golang application for gRPC service to read from PostgreSQL database
 
+# gRPC service in Kubernetes 
+  * https://www.google.com/search?q=how+to+host+a+grpc+service+in+kubernetes
+
+# Basic Self-Hosted Docker Registry 
+  * https://www.google.com/search?q=personal+docker+registry
+  * https://hub.docker.com/_/registry
+
 # Makefile 
   * https://tutorialedge.net/golang/makefiles-for-go-developers/
 
