@@ -14,4 +14,4 @@ helm install pg-minikube --set auth.postgresPassword=<your-strong-password> bitn
 
 # Verify the deployment 
 kubectl get pods -n default
-kubectl get services -n default 
+kubectl get services -n default
