@@ -4,7 +4,7 @@
 
 CREATE TABLE IF NOT EXISTS music.albums
 (
-    id integer NOT NULL DEFAULT nextval('music.albums_id_seq'::regclass),
+    id integer GENERATED ALWAYS AS IDENTITY,
     title text COLLATE pg_catalog."default" NOT NULL,
     artist text COLLATE pg_catalog."default" NOT NULL,
     price numeric(10,2) NOT NULL DEFAULT 0.00,

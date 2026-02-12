@@ -1,6 +1,9 @@
 # music-service
 practice Golang application for gRPC service to read from PostgreSQL database
 
+# postgres in minikube 
+  * https://www.google.com/search?q=how+to+host+postgres+in+minikube
+  
 # gRPC service in Kubernetes 
   * https://www.google.com/search?q=how+to+host+a+grpc+service+in+kubernetes
 
