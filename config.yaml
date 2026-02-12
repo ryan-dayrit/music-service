@@ -1,4 +1,4 @@
-service:
+grpc:
   network: tcp
   host: localhost
   port: 50051
