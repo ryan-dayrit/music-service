@@ -24,7 +24,7 @@ var clientCmd = &cobra.Command{
 			return
 		}
 
-		target := fmt.Sprintf("%s:%s", cfg.Service.Host, cfg.Service.Port)
+		target := fmt.Sprintf("%s:%s", cfg.Grpc.Host, cfg.Grpc.Port)
 		conn, err := grpc.Dial(
 			target,
 			grpc.WithTransportCredentials(insecure.NewCredentials()),

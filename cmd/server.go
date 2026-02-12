@@ -27,8 +27,8 @@ var serverCmd = &cobra.Command{
 			return
 		}
 
-		address := fmt.Sprintf(":%s", cfg.Service.Port)
-		listener, err := net.Listen(cfg.Service.Network, address)
+		address := fmt.Sprintf(":%s", cfg.Grpc.Port)
+		listener, err := net.Listen(cfg.Grpc.Network, address)
 		if err != nil {
 			panic(err)
 		}

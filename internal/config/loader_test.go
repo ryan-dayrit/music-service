@@ -10,7 +10,7 @@ func TestLoad_Success(t *testing.T) {
 	tempDir := t.TempDir()
 	configPath := filepath.Join(tempDir, "config.yaml")
 
-	configContent := []byte(`service:
+	configContent := []byte(`grpc:
   network: tcp
   host: localhost
   port: "8080"
@@ -48,14 +48,14 @@ database:
 		t.Fatalf("Load() failed: %v", err)
 	}
 
-	if cfg.Service.Network != "tcp" {
-		t.Errorf("Expected network 'tcp', got '%s'", cfg.Service.Network)
+	if cfg.Grpc.Network != "tcp" {
+		t.Errorf("Expected network 'tcp', got '%s'", cfg.Grpc.Network)
 	}
-	if cfg.Service.Host != "localhost" {
-		t.Errorf("Expected host 'localhost', got '%s'", cfg.Service.Host)
+	if cfg.Grpc.Host != "localhost" {
+		t.Errorf("Expected host 'localhost', got '%s'", cfg.Grpc.Host)
 	}
-	if cfg.Service.Port != "8080" {
-		t.Errorf("Expected port '8080', got '%s'", cfg.Service.Port)
+	if cfg.Grpc.Port != "8080" {
+		t.Errorf("Expected port '8080', got '%s'", cfg.Grpc.Port)
 	}
 
 	if cfg.Database.DriverName != "postgres" {
@@ -80,7 +80,7 @@ database:
 
 func TestLoad_FileNotFound(t *testing.T) {
 	tempDir := t.TempDir()
-	
+
 	originalDir, err := os.Getwd()
 	if err != nil {
 		t.Fatalf("Failed to get current working directory: %v", err)
@@ -106,7 +106,7 @@ func TestLoad_InvalidYAML(t *testing.T) {
 	tempDir := t.TempDir()
 	configPath := filepath.Join(tempDir, "config.yaml")
 
-	invalidYAML := []byte(`service:
+	invalidYAML := []byte(`grpc:
   network: tcp
   host: localhost
   port: "8080"
