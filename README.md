@@ -1,6 +1,12 @@
 # music-service
 practice Golang application for gRPC service to read from PostgreSQL database
 
+# structuring a repo for kafka processing 
+  * https://www.google.com/search?q=how+to+structure+golang+repo+for+kafka+processing
+
+* Steps to Generate a kustomization.yaml from Live Resources
+  * https://www.google.com/search?q=how+to+get+kustomization.yaml+of+all+resources+in+k8s
+  
 # postgres in minikube 
   * https://www.google.com/search?q=how+to+host+postgres+in+minikube
   
@@ -31,7 +37,7 @@ practice Golang application for gRPC service to read from PostgreSQL database
   * https://medium.com/the-godev-corner/how-to-create-publish-a-go-public-package-9034e6bfe4a9
 
 # SQL File Naming Conventions
-  * https://www.google.com/search?q=naming+convention+for+insert+sql+scripts+in+golang+repo&rlz=1C5AJCO_enUS1195US1195&oq=naming+convention+for+insert+sql+scripts+in+golang+repo&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQIRigATIHCAIQIRigATIHCAMQIRigATIHCAQQIRigATIHCAUQIRigATIHCAYQIRifBTIHCAcQIRifBTIHCAgQIRifBTIHCAkQIRifBdIBCDg1NzNqMGo3qAIIsAIB8QV3GjAuOpZU5Q&sourceid=chrome&ie=UTF-8
+  * https://www.google.com/search?q=naming+convention+for+insert+sql+scripts+in+golang+repo
 
 # Repository / Data Access Pattern
   * https://go.dev/doc/tutorial/database-access

@@ -5,22 +5,20 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-
-	"music-service/config"
 )
 
-func GetDB(cfg config.Config) (*sqlx.DB, error) {
+func NewPostgresDB(cfg Config) (*sqlx.DB, error) {
 	dataSourceNameTemplate := "user=%s dbname=%s sslmode=%s password=%s host=%s"
 	dataSourceName :=
 		fmt.Sprintf(
 			dataSourceNameTemplate,
-			cfg.Database.User,
-			cfg.Database.DBName,
-			cfg.Database.SSLMode,
-			cfg.Database.Password,
-			cfg.Database.Host,
+			cfg.User,
+			cfg.DBName,
+			cfg.SSLMode,
+			cfg.Password,
+			cfg.Host,
 		)
-	db, err := sqlx.Connect(cfg.Database.DriverName, dataSourceName)
+	db, err := sqlx.Connect(cfg.DriverName, dataSourceName)
 	if err != nil {
 		return nil, err
 	}

@@ -1,0 +1,10 @@
+.git
+.gitignore
+.vscode
+bin
+gen
+**/*_test.go
+**/*.md
+**/*.sql
+**/*.yaml
+!config.yaml

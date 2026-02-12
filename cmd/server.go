@@ -9,11 +9,11 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"music-service/config"
-	"music-service/dal/album"
-	"music-service/db"
 	"music-service/gen/pb"
-	"music-service/server"
+	"music-service/internal/config"
+	handler "music-service/internal/handler/grpc"
+	"music-service/internal/repository/postgres"
+	"music-service/pkg/postgres/db"
 )
 
 var serverCmd = &cobra.Command{
@@ -36,17 +36,17 @@ var serverCmd = &cobra.Command{
 		s := grpc.NewServer()
 		reflection.Register(s)
 
-		db, err := db.GetDB(*cfg)
+		db, err := db.NewPostgresDB(cfg.Database)
 		if err != nil {
 			log.Fatalf("failed to get db: %v", err)
 			return
 		}
 		defer db.Close()
 
-		repository := album.NewRepository(db)
-		server := server.NewServer(repository)
+		repository := postgres.NewRepository(db)
+		handler := handler.NewHandler(repository)
 
-		pb.RegisterMusicServiceServer(s, server)
+		pb.RegisterMusicServiceServer(s, handler)
 		if err := s.Serve(listener); err != nil {
 			log.Fatalf("failed to serve: %v", err)
 		}

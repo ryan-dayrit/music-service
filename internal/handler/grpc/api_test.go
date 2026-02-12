@@ -1,29 +1,30 @@
-package server
+package grpc
 
 import (
 	"context"
 	"errors"
 	"testing"
 
-	"music-service/dal/album"
 	"music-service/gen/pb"
+	"music-service/internal/models"
+
 	"github.com/shopspring/decimal"
 )
 
 type MockRepository struct {
-	ReadFunc func() ([]album.Album, error)
+	ReadFunc func() ([]models.Album, error)
 }
 
-func (m *MockRepository) Read() ([]album.Album, error) {
+func (m *MockRepository) Read() ([]models.Album, error) {
 	if m.ReadFunc != nil {
 		return m.ReadFunc()
 	}
-	return []album.Album{}, nil
+	return []models.Album{}, nil
 }
 
-func TestNewServer(t *testing.T) {
+func TestNewHandler(t *testing.T) {
 	mockRepo := &MockRepository{}
-	srv := NewServer(mockRepo)
+	srv := NewHandler(mockRepo)
 
 	if srv == nil {
 		t.Fatal("Expected non-nil server, got nil")
@@ -32,10 +33,10 @@ func TestNewServer(t *testing.T) {
 	var _ pb.MusicServiceServer = srv
 }
 
-func TestServer_GetAlbumList_Success(t *testing.T) {
+func TestHandler_GetAlbumList_Success(t *testing.T) {
 	mockRepo := &MockRepository{
-		ReadFunc: func() ([]album.Album, error) {
-			return []album.Album{
+		ReadFunc: func() ([]models.Album, error) {
+			return []models.Album{
 				{
 					Id:     1,
 					Title:  "Blue Train",
@@ -52,7 +53,7 @@ func TestServer_GetAlbumList_Success(t *testing.T) {
 		},
 	}
 
-	srv := NewServer(mockRepo)
+	srv := NewHandler(mockRepo)
 	req := &pb.GetAlbumsRequest{}
 	resp, err := srv.GetAlbumList(context.Background(), req)
 
@@ -89,14 +90,14 @@ func TestServer_GetAlbumList_Success(t *testing.T) {
 	}
 }
 
-func TestServer_GetAlbumList_EmptyResult(t *testing.T) {
+func TestHandler_GetAlbumList_EmptyResult(t *testing.T) {
 	mockRepo := &MockRepository{
-		ReadFunc: func() ([]album.Album, error) {
-			return []album.Album{}, nil
+		ReadFunc: func() ([]models.Album, error) {
+			return []models.Album{}, nil
 		},
 	}
 
-	srv := NewServer(mockRepo)
+	srv := NewHandler(mockRepo)
 	req := &pb.GetAlbumsRequest{}
 	resp, err := srv.GetAlbumList(context.Background(), req)
 
@@ -116,14 +117,14 @@ func TestServer_GetAlbumList_EmptyResult(t *testing.T) {
 func TestGetAlbumList_Function(t *testing.T) {
 	tests := []struct {
 		name          string
-		mockAlbums    []album.Album
+		mockAlbums    []models.Album
 		mockError     error
 		expectedCount int
 		expectError   bool
 	}{
 		{
 			name: "Single album",
-			mockAlbums: []album.Album{
+			mockAlbums: []models.Album{
 				{
 					Id:     1,
 					Title:  "Test Album",
@@ -137,7 +138,7 @@ func TestGetAlbumList_Function(t *testing.T) {
 		},
 		{
 			name:          "Empty album list",
-			mockAlbums:    []album.Album{},
+			mockAlbums:    []models.Album{},
 			mockError:     nil,
 			expectedCount: 0,
 			expectError:   false,
@@ -154,7 +155,7 @@ func TestGetAlbumList_Function(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			mockRepo := &MockRepository{
-				ReadFunc: func() ([]album.Album, error) {
+				ReadFunc: func() ([]models.Album, error) {
 					return tt.mockAlbums, tt.mockError
 				},
 			}
@@ -181,8 +182,8 @@ func TestGetAlbumList_Function(t *testing.T) {
 
 func TestGetAlbumList_PriceConversion(t *testing.T) {
 	mockRepo := &MockRepository{
-		ReadFunc: func() ([]album.Album, error) {
-			return []album.Album{
+		ReadFunc: func() ([]models.Album, error) {
+			return []models.Album{
 				{
 					Id:     1,
 					Title:  "Test",
@@ -211,15 +212,15 @@ func TestGetAlbumList_PriceConversion(t *testing.T) {
 
 func TestServer_GetAlbumList_ContextHandling(t *testing.T) {
 	mockRepo := &MockRepository{
-		ReadFunc: func() ([]album.Album, error) {
-			return []album.Album{}, nil
+		ReadFunc: func() ([]models.Album, error) {
+			return []models.Album{}, nil
 		},
 	}
 
-	srv := NewServer(mockRepo)
+	srv := NewHandler(mockRepo)
 
 	req := &pb.GetAlbumsRequest{}
-	
+
 	// Test with valid contexts - should succeed
 	_, err := srv.GetAlbumList(context.Background(), req)
 	if err != nil {
@@ -245,8 +246,8 @@ func TestServer_GetAlbumList_ContextHandling(t *testing.T) {
 
 func BenchmarkServer_GetAlbumList(b *testing.B) {
 	mockRepo := &MockRepository{
-		ReadFunc: func() ([]album.Album, error) {
-			return []album.Album{
+		ReadFunc: func() ([]models.Album, error) {
+			return []models.Album{
 				{Id: 1, Title: "Album 1", Artist: "Artist 1", Price: decimal.NewFromFloat(9.99)},
 				{Id: 2, Title: "Album 2", Artist: "Artist 2", Price: decimal.NewFromFloat(19.99)},
 				{Id: 3, Title: "Album 3", Artist: "Artist 3", Price: decimal.NewFromFloat(29.99)},
@@ -254,7 +255,7 @@ func BenchmarkServer_GetAlbumList(b *testing.B) {
 		},
 	}
 
-	srv := NewServer(mockRepo)
+	srv := NewHandler(mockRepo)
 	req := &pb.GetAlbumsRequest{}
 	ctx := context.Background()
 

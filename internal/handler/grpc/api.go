@@ -1,38 +1,42 @@
-package server
+package grpc
 
 import (
 	"context"
 	"log"
 
-	"music-service/dal/album"
 	"music-service/gen/pb"
+	"music-service/internal/repository/postgres"
 )
 
-type server struct {
+type handler struct {
 	pb.UnimplementedMusicServiceServer
-	album.Repository
+	postgres.Repository
 }
 
-func NewServer(repository album.Repository) pb.MusicServiceServer {
-	return &server{
+func NewHandler(repository postgres.Repository) pb.MusicServiceServer {
+	return &handler{
 		Repository: repository,
 	}
 }
 
-func (s *server) GetAlbumList(ctx context.Context, req *pb.GetAlbumsRequest) (*pb.GetAlbumsResponse, error) {
+func (h *handler) GetAlbumList(ctx context.Context, req *pb.GetAlbumsRequest) (*pb.GetAlbumsResponse, error) {
 	log.Println("request received")
-	
-	// Check if context is already canceled
+
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
-	
+
+	albums, err := getAlbumList(h.Repository)
+	if err != nil {
+		return nil, err
+	}
+
 	return &pb.GetAlbumsResponse{
 		Albums: albums,
 	}, nil
 }
 
-func getAlbumList(repository album.Repository) ([]*pb.Album, error) {
+func getAlbumList(repository postgres.Repository) ([]*pb.Album, error) {
 	albums, err := repository.Read()
 	if err != nil {
 		return nil, err

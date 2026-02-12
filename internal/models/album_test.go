@@ -1,4 +1,4 @@
-package album
+package models
 
 import (
 	"testing"

@@ -1,4 +1,4 @@
-module github.com/ryan-dayrit/music-service
+module music-service
 
 go 1.25.5
 

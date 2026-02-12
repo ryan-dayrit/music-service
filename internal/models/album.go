@@ -1,4 +1,4 @@
-package album
+package models
 
 import (
 	"github.com/shopspring/decimal"
