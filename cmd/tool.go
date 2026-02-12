@@ -5,9 +5,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"music-service/config"
-	"music-service/dal/album"
-	"music-service/db"
+	"music-service/internal/config"
+	"music-service/internal/repository/postgres"
+	"music-service/pkg/postgres/db"
 )
 
 var toolCmd = &cobra.Command{
@@ -20,13 +20,13 @@ var toolCmd = &cobra.Command{
 			log.Fatalf("failed to load config %v", err)
 		}
 
-		db, err := db.GetDB(*cfg)
+		db, err := db.NewPostgresDB(cfg.Database)
 		if err != nil {
 			log.Fatalf("failed to get db: %v", err)
 		}
 		defer db.Close()
 
-		repository := album.NewRepository(db)
+		repository := postgres.NewRepository(db)
 
 		albums, err := repository.Read()
 		if err != nil {

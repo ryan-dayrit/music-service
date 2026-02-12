@@ -10,8 +10,11 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 
 # Install the PostgreSQL Helm chart 
-helm install pg-minikube --set auth.postgresPassword=<your-strong-password> bitnami/postgresql
+helm install pg-minikube --set auth.postgresPassword=umagos bitnami/postgresql
 
 # Verify the deployment 
 kubectl get pods -n default
 kubectl get services -n default
+
+# port forward to access PostgreSQL in minikube 
+kubectl port-forward svc/pg-minikube-postgresql-hl 5432:5432

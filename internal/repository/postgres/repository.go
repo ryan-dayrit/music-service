@@ -1,13 +1,15 @@
-package album
+package postgres
 
 import (
 	_ "embed"
 
 	"github.com/jmoiron/sqlx"
+
+	"music-service/internal/models"
 )
 
 type Repository interface {
-	Read() ([]Album, error)
+	Read() ([]models.Album, error)
 }
 
 type repository struct {
@@ -21,11 +23,11 @@ func NewRepository(db *sqlx.DB) Repository {
 //go:embed queries/get_albums.sql
 var getAlbumsQuery string
 
-func (r *repository) Read() ([]Album, error) {
-	albums := []Album{}
+func (r *repository) Read() ([]models.Album, error) {
+	albums := []models.Album{}
 	rows, _ := r.db.Queryx(getAlbumsQuery)
 	for rows.Next() {
-		album := Album{}
+		album := models.Album{}
 		err := rows.StructScan(&album)
 		if err != nil {
 			return albums, err
