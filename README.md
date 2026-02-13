@@ -2,6 +2,7 @@
 practice Golang application for gRPC service to read from PostgreSQL database
 
 # deploying kafka to minikube 
+  * https://medium.com/globant/deploying-kafka-on-minikube-without-ip-hack-springboot-producer-consumer-6698489012dd
   * [Strimzi](https://saedhasan.medium.com/setting-up-kafka-on-minikube-k8s-using-strimzi-5cac7870d943) 
   * https://www.google.com/search?q=how+to+access+Strimzi+kafka+from+outside+minikube
   * https://stackoverflow.com/questions/77480906/how-to-access-strimzi-kafka-cluster-running-on-minikube-publically
