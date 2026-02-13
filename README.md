@@ -1,6 +1,13 @@
 # music-service
 practice Golang application for gRPC service to read from PostgreSQL database
 
+# deploying kafka using docker compose 
+  * https://docs.docker.com/guides/kafka/
+  * https://medium.com/@darshak.kachchhi/setting-up-a-kafka-cluster-using-docker-compose-a-step-by-step-guide-a1ee5972b122
+
+# installing kafka 
+  * https://medium.com/@Shamimw/kafka-a-complete-tutorial-part-1-installing-kafka-server-without-zookeeper-kraft-mode-using-6fc60272457f
+
 # deploying kafka to minikube 
   * https://medium.com/globant/deploying-kafka-on-minikube-without-ip-hack-springboot-producer-consumer-6698489012dd
   * [Strimzi](https://saedhasan.medium.com/setting-up-kafka-on-minikube-k8s-using-strimzi-5cac7870d943) 
