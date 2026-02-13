@@ -1,10 +1,21 @@
 # music-service
 practice Golang application for gRPC service to read from PostgreSQL database
 
+# deploying kafka to minikube 
+  * [Strimzi](https://saedhasan.medium.com/setting-up-kafka-on-minikube-k8s-using-strimzi-5cac7870d943) 
+  * https://www.google.com/search?q=how+to+access+Strimzi+kafka+from+outside+minikube
+  * https://stackoverflow.com/questions/77480906/how-to-access-strimzi-kafka-cluster-running-on-minikube-publically
+  * [Helm](https://www.google.com/search?q=deploying+kafka+to+minikube+using+helm)
+
+# UIs for kafka
+  * [Provectus Kafka UI](https://github.com/provectus/kafka-ui/)
+  * https://www.reddit.com/r/apachekafka/comments/x9sov2/a_list_of_gui_tools_for_working_with_apache_kafka/
+  * https://aiven.io/blog/top-kafka-ui
+
 # structuring a repo for kafka processing 
   * https://www.google.com/search?q=how+to+structure+golang+repo+for+kafka+processing
 
-* Steps to Generate a kustomization.yaml from Live Resources
+# Steps to Generate a kustomization.yaml from Live Resources
   * https://www.google.com/search?q=how+to+get+kustomization.yaml+of+all+resources+in+k8s
   
 # postgres in minikube 
