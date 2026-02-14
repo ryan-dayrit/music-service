@@ -3,13 +3,19 @@ practice Golang application for gRPC, REST, Kafka, PostgreSQL
 
 # Processing flow 
 Writes 
-1. Public REST API POST/PUT receiver for json payloads
-2. Public REST API publishes proto to Kafka
+1. REST API POST/PUT receiver for json payloads
+2. REST API publishes proto to Kafka
 3. Kafka consumer consumes the proto and stores in PostgreSQL
 
 Reads 
-1. Private gRPC API which reads from PostgreSQL and returns protos in json format
+1. gRPC API which reads from the PostgreSQL database and returns protos in json format
 
+CLI Testers 
+1. REST API client which sends POST/PUT requests
+2. gRPC API client which calls gRPC API and prints response
+3. Kakfa producer which sends marshalled protos to the Kafka topic
+4. PostgreSQL client which reads the PostgreSQL database direcly
+   
 # rest api using Fiber 
   * https://dev.to/koddr/build-a-restful-api-on-go-fiber-postgresql-jwt-and-swagger-docs-in-isolated-docker-containers-475j
   * https://github.com/koddr/tutorial-go-fiber-rest-api
@@ -96,5 +102,6 @@ Reads
   * https://www.digitalocean.com/community/tutorials/how-to-use-the-cobra-package-in-go
   * https://cobra.dev/docs/tutorials/getting-started/
   * https://github.com/mwiater/golangcliscaffold/tree/step3
+
 
 
