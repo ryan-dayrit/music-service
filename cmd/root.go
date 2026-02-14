@@ -17,6 +17,7 @@ func Execute() {
 func init() {
 	rootCmd.AddCommand(clientCmd)
 	rootCmd.AddCommand(consumerCmd)
+	rootCmd.AddCommand(producerCmd)
 	rootCmd.AddCommand(serverCmd)
 	rootCmd.AddCommand(toolCmd)
 }

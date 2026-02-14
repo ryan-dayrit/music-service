@@ -9,5 +9,5 @@ import (
 type Config struct {
 	Grpc     grpc.Config  `yaml:"grpc"`
 	Database db.Config    `yaml:"database"`
-	Consumer kafka.Config `yaml:"consumer"`
+	Kafka    kafka.Config `yaml:"kafka"`
 }
