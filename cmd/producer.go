@@ -10,10 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var consumerCmd = &cobra.Command{
-	Use:   "consumer",
-	Short: "starts the kafka consumer",
-	Long:  `starts the kafka consumer which listens to topics and processes messages`,
+var producerCmd = &cobra.Command{
+	Use:   "producer",
+	Short: "starts the kafka producer",
+	Long:  `starts the kafka producer which sends messages to topics`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := context.Background()
 
@@ -22,11 +22,11 @@ var consumerCmd = &cobra.Command{
 			log.Panicf("failed to load config %v", err)
 		}
 
-		handler, err := kafka.NewHandler(cfg.Kafka)
+		producer, err := kafka.NewProducer(cfg.Kafka)
 		if err != nil {
-			log.Panicf("Error creating Kafka handler: %v", err)
+			log.Panicf("Error creating Kafka producer: %v", err)
 		}
 
-		handler.Consume(ctx)
+		producer.Produce(ctx)
 	},
 }

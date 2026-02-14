@@ -11,7 +11,7 @@ database:
   password: umagos
   host: localhost
 
-consumer:
+kafka:
   brokers: localhost:9092 
   consumer_group: test-consumer-group
   topics: test-topic
