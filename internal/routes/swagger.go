@@ -5,7 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func RegisterSwaggerRoute(a *fiber.App) {
-	route := a.Group("/swagger")
+func RegisterSwaggerRoute(app *fiber.App) {
+	route := app.Group("/swagger")
 	route.Get("*", swagger.HandlerDefault)
 }

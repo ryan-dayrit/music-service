@@ -16,7 +16,7 @@ import (
 
 func NewProducerCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "producer",
+		Use:   "kafka-producer",
 		Short: "starts the kafka producer",
 		Long:  `starts the kafka producer which sends messages to topics`,
 		Run: func(cmd *cobra.Command, args []string) {

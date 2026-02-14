@@ -15,7 +15,7 @@ func TestLoad_Success(t *testing.T) {
   host: localhost
   port: "8080"
 
-database:
+postgres:
   driver_name: postgres
   user: testuser
   db_name: testdb
@@ -58,23 +58,23 @@ database:
 		t.Errorf("Expected port '8080', got '%s'", cfg.Grpc.Port)
 	}
 
-	if cfg.Database.DriverName != "postgres" {
-		t.Errorf("Expected driver_name 'postgres', got '%s'", cfg.Database.DriverName)
+	if cfg.Postgres.DriverName != "postgres" {
+		t.Errorf("Expected driver_name 'postgres', got '%s'", cfg.Postgres.DriverName)
 	}
-	if cfg.Database.User != "testuser" {
-		t.Errorf("Expected user 'testuser', got '%s'", cfg.Database.User)
+	if cfg.Postgres.User != "testuser" {
+		t.Errorf("Expected user 'testuser', got '%s'", cfg.Postgres.User)
 	}
-	if cfg.Database.DBName != "testdb" {
-		t.Errorf("Expected db_name 'testdb', got '%s'", cfg.Database.DBName)
+	if cfg.Postgres.DBName != "testdb" {
+		t.Errorf("Expected db_name 'testdb', got '%s'", cfg.Postgres.DBName)
 	}
-	if cfg.Database.SSLMode != "disable" {
-		t.Errorf("Expected ssl_mode 'disable', got '%s'", cfg.Database.SSLMode)
+	if cfg.Postgres.SSLMode != "disable" {
+		t.Errorf("Expected ssl_mode 'disable', got '%s'", cfg.Postgres.SSLMode)
 	}
-	if cfg.Database.Password != "testpass" {
-		t.Errorf("Expected password 'testpass', got '%s'", cfg.Database.Password)
+	if cfg.Postgres.Password != "testpass" {
+		t.Errorf("Expected password 'testpass', got '%s'", cfg.Postgres.Password)
 	}
-	if cfg.Database.Host != "localhost" {
-		t.Errorf("Expected database host 'localhost', got '%s'", cfg.Database.Host)
+	if cfg.Postgres.Host != "localhost" {
+		t.Errorf("Expected database host 'localhost', got '%s'", cfg.Postgres.Host)
 	}
 }
 

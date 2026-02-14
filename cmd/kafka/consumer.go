@@ -12,7 +12,7 @@ import (
 
 func NewConsumerCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "consumer",
+		Use:   "kafka-consumer",
 		Short: "starts the kafka consumer",
 		Long:  `starts the kafka consumer which listens to topics and processes messages`,
 		Run: func(cmd *cobra.Command, args []string) {

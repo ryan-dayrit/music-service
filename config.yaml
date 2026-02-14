@@ -3,7 +3,7 @@ grpc:
   host: localhost
   port: 50051
 
-database:
+postgres:
   driver_name: postgres
   user: postgres
   db_name: practice
@@ -19,6 +19,6 @@ kafka:
   oldest: true
 
 rest:
-  read_timeout: 5s
-  write_timeout: 5s
-  server_url: :3000
+  read_timeout: 60
+  write_timeout: 60
+  server_url: localhost:3000

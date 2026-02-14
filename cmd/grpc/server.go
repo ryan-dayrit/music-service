@@ -18,7 +18,7 @@ import (
 
 func NewGrpcServerCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "grpc_server",
+		Use:   "grpc-server",
 		Short: "starts the gRPC server",
 		Long:  `starts the gRPC server which hosts MusicService which returns albums`,
 		Run: func(cmd *cobra.Command, args []string) {
@@ -37,7 +37,7 @@ func NewGrpcServerCommand() *cobra.Command {
 			s := grpc.NewServer()
 			reflection.Register(s)
 
-			db, err := db.NewPostgresDB(cfg.Database)
+			db, err := db.NewPostgresDB(cfg.Postgres)
 			if err != nil {
 				log.Fatalf("failed to get db: %v", err)
 				return

@@ -22,9 +22,12 @@ func Execute() {
 func init() {
 	rootCmd.AddCommand(grpc.NewGrpcClientCommand())
 	rootCmd.AddCommand(grpc.NewGrpcServerCommand())
+
 	rootCmd.AddCommand(kafka.NewConsumerCommand())
 	rootCmd.AddCommand(kafka.NewProducerCommand())
+
 	rootCmd.AddCommand(postgres.NewToolCommand())
+
 	rootCmd.AddCommand(rest.NewRestClientCommand())
 	rootCmd.AddCommand(rest.NewRestServerCommand())
 }

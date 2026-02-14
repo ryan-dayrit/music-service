@@ -9,7 +9,7 @@ import (
 
 type Config struct {
 	Grpc     grpc.Config  `yaml:"grpc"`
-	Database db.Config    `yaml:"database"`
+	Postgres db.Config    `yaml:"postgres"`
 	Kafka    kafka.Config `yaml:"kafka"`
 	Rest     rest.Config  `yaml:"rest"`
 }
