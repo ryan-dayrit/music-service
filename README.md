@@ -1,5 +1,14 @@
 # music-service
-practice Golang application for gRPC service to read from PostgreSQL database
+practice Golang application for gRPC, REST, Kafka, PostgreSQL
+
+# Processing flow 
+Writes 
+1. Public REST API POST/PUT receiver for json payloads
+2. Public REST API publishes proto to Kafka
+3. Kafka consumer consumes the proto and stores in PostgreSQL
+
+Reads 
+1. Private gRPC API which reads from PostgreSQL and returns protos in json format
 
 # rest api using Fiber 
   * https://dev.to/koddr/build-a-restful-api-on-go-fiber-postgresql-jwt-and-swagger-docs-in-isolated-docker-containers-475j
@@ -87,4 +96,5 @@ practice Golang application for gRPC service to read from PostgreSQL database
   * https://www.digitalocean.com/community/tutorials/how-to-use-the-cobra-package-in-go
   * https://cobra.dev/docs/tutorials/getting-started/
   * https://github.com/mwiater/golangcliscaffold/tree/step3
+
 
