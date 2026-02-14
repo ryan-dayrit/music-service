@@ -22,7 +22,7 @@ var consumerCmd = &cobra.Command{
 			log.Panicf("failed to load config %v", err)
 		}
 
-		handler, err := kafka.NewHandler(cfg.Kafka)
+		handler, err := kafka.NewConsumerHandler(cfg.Kafka)
 		if err != nil {
 			log.Panicf("Error creating Kafka handler: %v", err)
 		}

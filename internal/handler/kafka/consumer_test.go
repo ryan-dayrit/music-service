@@ -121,7 +121,7 @@ func TestNewHandler(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			h, err := NewHandler(tt.cfg)
+			h, err := NewConsumerHandler(tt.cfg)
 			if tt.mustError {
 				assert.Error(t, err)
 				assert.Nil(t, h)
@@ -171,7 +171,7 @@ func TestNewHandler_WithMock(t *testing.T) {
 		mockCG := new(MockConsumerGroup)
 
 		// Create handler directly for testing structure
-		h := &handler{
+		h := &consumerHandler{
 			cfg:           cfg,
 			consumerGroup: mockCG,
 		}
@@ -194,7 +194,7 @@ func TestConsume_ContextCancellation(t *testing.T) {
 		Oldest:        false,
 	}
 
-	h := &handler{
+	h := &consumerHandler{
 		cfg:           cfg,
 		consumerGroup: mockCG,
 	}
@@ -237,7 +237,7 @@ func TestConsume_ErrorHandling(t *testing.T) {
 			Assignor:      "sticky",
 		}
 
-		h := &handler{
+		h := &consumerHandler{
 			cfg:           cfg,
 			consumerGroup: mockCG,
 		}
@@ -271,7 +271,7 @@ func TestConsume_MultipleTopics(t *testing.T) {
 		Assignor:      "sticky",
 	}
 
-	h := &handler{
+	h := &consumerHandler{
 		cfg:           cfg,
 		consumerGroup: mockCG,
 	}
@@ -305,7 +305,7 @@ func TestConsume_CloseError(t *testing.T) {
 		Assignor:      "sticky",
 	}
 
-	h := &handler{
+	h := &consumerHandler{
 		cfg:           cfg,
 		consumerGroup: mockCG,
 	}
@@ -392,7 +392,7 @@ func TestHandlerStructure(t *testing.T) {
 		Oldest:        true,
 	}
 
-	h := &handler{
+	h := &consumerHandler{
 		cfg:           cfg,
 		consumerGroup: mockCG,
 	}
@@ -441,7 +441,7 @@ func TestConsume_TopicParsing(t *testing.T) {
 				Assignor:      "sticky",
 			}
 
-			h := &handler{
+			h := &consumerHandler{
 				cfg:           cfg,
 				consumerGroup: mockCG,
 			}
@@ -476,7 +476,7 @@ func TestConsume_ConsumeRetry(t *testing.T) {
 		Assignor:      "sticky",
 	}
 
-	h := &handler{
+	h := &consumerHandler{
 		cfg:           cfg,
 		consumerGroup: mockCG,
 	}
