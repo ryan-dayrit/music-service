@@ -1,26 +1,63 @@
 package rest
 
 import (
+	"bytes"
 	"log"
+	"net/http"
 
+	"encoding/json"
+	"math/rand/v2"
+
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 
+	"music-service/gen/pb"
 	"music-service/internal/config"
 )
 
 func NewRestClientCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "rest_client",
+		Use:   "rest-client",
 		Short: "sends requests to the MusicService REST server",
 		Long:  `calls the MusicService REST server to create an album and shows the response`,
 		Run: func(cmd *cobra.Command, args []string) {
-			_, err := config.Load()
+			cfg, err := config.Load()
 			if err != nil {
 				log.Fatalf("failed to load config %v", err)
-				return
 			}
 
-			// TODO: implement the REST client that sends requests to the REST server and shows the response
+			url := "http://" + cfg.Rest.ServerUrl + "/api/v1/album"
+
+			sendRequest("POST", url)
+			sendRequest("PUT", url)
 		},
 	}
+}
+
+func sendRequest(method string, url string) {
+	album := &pb.Album{
+		Id:     rand.Int32(),
+		Title:  uuid.NewString(),
+		Artist: uuid.NewString(),
+		Price:  rand.Float32(),
+	}
+	jsonData, err := json.Marshal(&album)
+	if err != nil {
+		log.Fatalf("failed to marshal album %v", err)
+	}
+
+	request, err := http.NewRequest(method, url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		log.Fatalf("failed to %s album %v", method, err)
+	}
+	request.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		log.Fatalf("failed to send %s request %v", method, err)
+	}
+	defer response.Body.Close()
+
+	log.Printf("%s request response status: %s", method, response.Status)
 }

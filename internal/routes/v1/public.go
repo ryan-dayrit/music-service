@@ -7,7 +7,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func RegisterPublicRoutes(r fiber.Router, producer kafka.Producer) {
+func RegisterPublicRoutes(router fiber.Router, producer kafka.Producer) {
 	albumHandler := v1.NewAlbumHandler(producer)
-	r.Post("/albums", albumHandler.CreateAlbum)
+
+	router.Post("/album", albumHandler.CreateAlbum)
+	router.Put("/album", albumHandler.CreateAlbum)
 }

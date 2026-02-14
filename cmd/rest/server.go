@@ -16,7 +16,7 @@ import (
 
 func NewRestServerCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "rest_server",
+		Use:   "rest-server",
 		Short: "starts the REST server",
 		Long:  `starts the REST server which hosts MusicService which receives requests to create albums`,
 		Run: func(cmd *cobra.Command, args []string) {
@@ -38,8 +38,12 @@ func NewRestServerCommand() *cobra.Command {
 
 			app := fiber.New(fiberCfg)
 
+			app.Get("/", func(c *fiber.Ctx) error {
+				return c.SendString("Hello, World!")
+			})
+
 			routes.RegisterSwaggerRoute(app)
-			routes.RegisterNotFoundRoute(app)
+			//routes.RegisterNotFoundRoute(app)
 
 			v1Router := app.Group("/api/v1")
 			v1.RegisterHealthRoute(v1Router)

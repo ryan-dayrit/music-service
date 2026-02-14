@@ -12,7 +12,7 @@ import (
 
 func NewToolCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "tool",
+		Use:   "postgres-tool",
 		Short: "shows the albums",
 		Long:  `queries the postgres db directly and shows the albums`,
 		Run: func(cmd *cobra.Command, args []string) {
@@ -21,7 +21,7 @@ func NewToolCommand() *cobra.Command {
 				log.Fatalf("failed to load config %v", err)
 			}
 
-			db, err := db.NewPostgresDB(cfg.Database)
+			db, err := db.NewPostgresDB(cfg.Postgres)
 			if err != nil {
 				log.Fatalf("failed to get db: %v", err)
 			}
