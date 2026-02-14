@@ -20,5 +20,4 @@ func NewSyncProducer(cfg Config) (sarama.SyncProducer, error) {
 	}
 
 	return syncProducer, nil
-
 }

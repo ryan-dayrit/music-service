@@ -3,6 +3,10 @@ package cmd
 import (
 	"os"
 
+	"music-service/cmd/grpc"
+	"music-service/cmd/kafka"
+	"music-service/cmd/postgres"
+
 	"github.com/spf13/cobra"
 )
 
@@ -15,9 +19,9 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.AddCommand(clientCmd)
-	rootCmd.AddCommand(consumerCmd)
-	rootCmd.AddCommand(producerCmd)
-	rootCmd.AddCommand(serverCmd)
-	rootCmd.AddCommand(toolCmd)
+	rootCmd.AddCommand(grpc.NewClientCommand())
+	rootCmd.AddCommand(grpc.NewServerCommand())
+	rootCmd.AddCommand(kafka.NewConsumerCommand())
+	rootCmd.AddCommand(kafka.NewProducerCommand())
+	rootCmd.AddCommand(postgres.NewToolCommand())
 }
