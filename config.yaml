@@ -17,3 +17,8 @@ kafka:
   topics: test-topic
   assignor: roundrobin
   oldest: true
+
+rest:
+  read_timeout: 5s
+  write_timeout: 5s
+  server_url: :3000

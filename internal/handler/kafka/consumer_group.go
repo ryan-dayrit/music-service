@@ -3,10 +3,10 @@ package kafka
 import (
 	"log"
 
-	"music-service/gen/pb"
-
 	"github.com/IBM/sarama"
 	"google.golang.org/protobuf/proto"
+
+	"music-service/gen/pb"
 )
 
 type consumerGroupHandler struct {

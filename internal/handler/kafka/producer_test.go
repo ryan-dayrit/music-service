@@ -5,10 +5,14 @@ import (
 	"errors"
 	"testing"
 
+	"math/rand/v2"
+
 	"github.com/IBM/sarama"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
+	"music-service/gen/pb"
 	"music-service/pkg/kafka"
 )
 
@@ -201,7 +205,13 @@ func TestProduce_Success(t *testing.T) {
 	})).Return(1, 100, nil)
 
 	// This should not panic
-	p.Produce(ctx)
+	album := &pb.Album{
+		Id:     rand.Int32(),
+		Title:  uuid.NewString(),
+		Artist: uuid.NewString(),
+		Price:  rand.Float32(),
+	}
+	p.Produce(ctx, album)
 
 	mockSP.AssertExpectations(t)
 	mockSP.AssertCalled(t, "SendMessage", mock.Anything)
@@ -231,7 +241,13 @@ func TestProduce_Error(t *testing.T) {
 
 	// This should panic due to the send error
 	assert.Panics(t, func() {
-		p.Produce(ctx)
+		album := &pb.Album{
+			Id:     rand.Int32(),
+			Title:  uuid.NewString(),
+			Artist: uuid.NewString(),
+			Price:  rand.Float32(),
+		}
+		p.Produce(ctx, album)
 	})
 
 	mockSP.AssertExpectations(t)
@@ -263,19 +279,21 @@ func TestProduce_MessageContent(t *testing.T) {
 		capturedMessage = args.Get(0).(*sarama.ProducerMessage)
 	}).Return(0, 0, nil)
 
-	p.Produce(ctx)
+	album := &pb.Album{
+		Id:     rand.Int32(),
+		Title:  uuid.NewString(),
+		Artist: uuid.NewString(),
+		Price:  rand.Float32(),
+	}
+	p.Produce(ctx, album)
 
 	assert.NotNil(t, capturedMessage)
 	assert.Equal(t, "test-topic", capturedMessage.Topic)
 	assert.NotNil(t, capturedMessage.Value)
 
 	// Decode the message value
-	msgBytes, err := capturedMessage.Value.Encode()
+	_, err := capturedMessage.Value.Encode()
 	assert.NoError(t, err)
-	msgStr := string(msgBytes)
-
-	// Check that message starts with expected prefix
-	assert.Contains(t, msgStr, "random message - ")
 
 	mockSP.AssertExpectations(t)
 }
@@ -309,9 +327,29 @@ func TestProduce_MultipleMessages(t *testing.T) {
 	}).Return(0, 0, nil).Times(3)
 
 	// Produce three messages
-	p.Produce(ctx)
-	p.Produce(ctx)
-	p.Produce(ctx)
+	album1 := &pb.Album{
+		Id:     rand.Int32(),
+		Title:  uuid.NewString(),
+		Artist: uuid.NewString(),
+		Price:  rand.Float32(),
+	}
+	p.Produce(ctx, album1)
+
+	album2 := &pb.Album{
+		Id:     rand.Int32(),
+		Title:  uuid.NewString(),
+		Artist: uuid.NewString(),
+		Price:  rand.Float32(),
+	}
+	p.Produce(ctx, album2)
+
+	album3 := &pb.Album{
+		Id:     rand.Int32(),
+		Title:  uuid.NewString(),
+		Artist: uuid.NewString(),
+		Price:  rand.Float32(),
+	}
+	p.Produce(ctx, album3)
 
 	assert.Len(t, capturedMessages, 3)
 
@@ -320,7 +358,6 @@ func TestProduce_MultipleMessages(t *testing.T) {
 	for _, msg := range capturedMessages {
 		assert.NotContains(t, messageSet, msg, "messages should be unique")
 		messageSet[msg] = true
-		assert.Contains(t, msg, "random message - ")
 	}
 
 	mockSP.AssertExpectations(t)
@@ -373,7 +410,13 @@ func TestProduce_DifferentTopics(t *testing.T) {
 				return msg.Topic == tt.topic
 			})).Return(0, 0, nil)
 
-			p.Produce(ctx)
+			album := &pb.Album{
+				Id:     rand.Int32(),
+				Title:  uuid.NewString(),
+				Artist: uuid.NewString(),
+				Price:  rand.Float32(),
+			}
+			p.Produce(ctx, album)
 
 			mockSP.AssertExpectations(t)
 		})
@@ -425,7 +468,13 @@ func TestProduce_DifferentPartitions(t *testing.T) {
 			// Mock returns specific partition and offset
 			mockSP.On("SendMessage", mock.Anything).Return(int(tt.partition), int(tt.offset), nil)
 
-			p.Produce(ctx)
+			album := &pb.Album{
+				Id:     rand.Int32(),
+				Title:  uuid.NewString(),
+				Artist: uuid.NewString(),
+				Price:  rand.Float32(),
+			}
+			p.Produce(ctx, album)
 
 			mockSP.AssertExpectations(t)
 		})
@@ -478,7 +527,13 @@ func TestProduce_WithContext(t *testing.T) {
 	t.Run("background context", func(t *testing.T) {
 		ctx := context.Background()
 		mockSP.On("SendMessage", mock.Anything).Return(0, 0, nil).Once()
-		p.Produce(ctx)
+		album := &pb.Album{
+			Id:     rand.Int32(),
+			Title:  uuid.NewString(),
+			Artist: uuid.NewString(),
+			Price:  rand.Float32(),
+		}
+		p.Produce(ctx, album)
 		mockSP.AssertExpectations(t)
 	})
 
@@ -486,7 +541,13 @@ func TestProduce_WithContext(t *testing.T) {
 	t.Run("todo context", func(t *testing.T) {
 		ctx := context.TODO()
 		mockSP.On("SendMessage", mock.Anything).Return(0, 0, nil).Once()
-		p.Produce(ctx)
+		album := &pb.Album{
+			Id:     rand.Int32(),
+			Title:  uuid.NewString(),
+			Artist: uuid.NewString(),
+			Price:  rand.Float32(),
+		}
+		p.Produce(ctx, album)
 		mockSP.AssertExpectations(t)
 	})
 
@@ -495,7 +556,13 @@ func TestProduce_WithContext(t *testing.T) {
 		ctx, cancel := context.WithCancel(context.Background())
 		cancel() // Cancel immediately
 		mockSP.On("SendMessage", mock.Anything).Return(0, 0, nil).Once()
-		p.Produce(ctx)
+		album := &pb.Album{
+			Id:     rand.Int32(),
+			Title:  uuid.NewString(),
+			Artist: uuid.NewString(),
+			Price:  rand.Float32(),
+		}
+		p.Produce(ctx, album)
 		mockSP.AssertExpectations(t)
 	})
 }
@@ -525,7 +592,13 @@ func TestProduce_MessageEncoding(t *testing.T) {
 		capturedEncoder = msg.Value
 	}).Return(0, 0, nil)
 
-	p.Produce(ctx)
+	album := &pb.Album{
+		Id:     rand.Int32(),
+		Title:  uuid.NewString(),
+		Artist: uuid.NewString(),
+		Price:  rand.Float32(),
+	}
+	p.Produce(ctx, album)
 
 	assert.NotNil(t, capturedEncoder)
 
@@ -533,7 +606,6 @@ func TestProduce_MessageEncoding(t *testing.T) {
 	bytes, err := capturedEncoder.Encode()
 	assert.NoError(t, err)
 	assert.NotEmpty(t, bytes)
-	assert.Contains(t, string(bytes), "random message - ")
 
 	mockSP.AssertExpectations(t)
 }
@@ -563,7 +635,13 @@ func TestProduce_EmptyTopic(t *testing.T) {
 
 	// Should panic due to error
 	assert.Panics(t, func() {
-		p.Produce(ctx)
+		album := &pb.Album{
+			Id:     rand.Int32(),
+			Title:  uuid.NewString(),
+			Artist: uuid.NewString(),
+			Price:  rand.Float32(),
+		}
+		p.Produce(ctx, album)
 	})
 
 	mockSP.AssertExpectations(t)

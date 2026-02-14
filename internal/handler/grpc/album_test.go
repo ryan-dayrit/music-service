@@ -24,7 +24,7 @@ func (m *MockRepository) Read() ([]models.Album, error) {
 
 func TestNewHandler(t *testing.T) {
 	mockRepo := &MockRepository{}
-	srv := NewHandler(mockRepo)
+	srv := NewAlbumHandler(mockRepo)
 
 	if srv == nil {
 		t.Fatal("Expected non-nil server, got nil")
@@ -53,7 +53,7 @@ func TestHandler_GetAlbumList_Success(t *testing.T) {
 		},
 	}
 
-	srv := NewHandler(mockRepo)
+	srv := NewAlbumHandler(mockRepo)
 	req := &pb.GetAlbumsRequest{}
 	resp, err := srv.GetAlbumList(context.Background(), req)
 
@@ -97,7 +97,7 @@ func TestHandler_GetAlbumList_EmptyResult(t *testing.T) {
 		},
 	}
 
-	srv := NewHandler(mockRepo)
+	srv := NewAlbumHandler(mockRepo)
 	req := &pb.GetAlbumsRequest{}
 	resp, err := srv.GetAlbumList(context.Background(), req)
 
@@ -217,7 +217,7 @@ func TestServer_GetAlbumList_ContextHandling(t *testing.T) {
 		},
 	}
 
-	srv := NewHandler(mockRepo)
+	srv := NewAlbumHandler(mockRepo)
 
 	req := &pb.GetAlbumsRequest{}
 
@@ -255,7 +255,7 @@ func BenchmarkServer_GetAlbumList(b *testing.B) {
 		},
 	}
 
-	srv := NewHandler(mockRepo)
+	srv := NewAlbumHandler(mockRepo)
 	req := &pb.GetAlbumsRequest{}
 	ctx := context.Background()
 

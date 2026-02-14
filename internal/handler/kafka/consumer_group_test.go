@@ -8,6 +8,9 @@ import (
 	"github.com/IBM/sarama"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"google.golang.org/protobuf/proto"
+
+	"music-service/gen/pb"
 )
 
 type MockConsumerGroupSession struct {
@@ -138,6 +141,14 @@ func TestConsumerGroupHandler_Cleanup(t *testing.T) {
 }
 
 func TestConsumerGroupHandler_ConsumeClaim(t *testing.T) {
+	value, err := proto.Marshal(&pb.Album{
+		Id:     1,
+		Title:  "Test Album",
+		Artist: "Test Artist",
+		Price:  9.99,
+	})
+	assert.NoError(t, err)
+
 	tests := []struct {
 		name           string
 		setupMock      func(*MockConsumerGroupSession, *MockConsumerGroupClaim, context.Context, context.CancelFunc)
@@ -149,7 +160,7 @@ func TestConsumerGroupHandler_ConsumeClaim(t *testing.T) {
 			setupMock: func(session *MockConsumerGroupSession, claim *MockConsumerGroupClaim, ctx context.Context, cancel context.CancelFunc) {
 				claim.messages = make(chan *sarama.ConsumerMessage, 1)
 				claim.messages <- &sarama.ConsumerMessage{
-					Value:     []byte("test message"),
+					Value:     []byte(value),
 					Topic:     "test-topic",
 					Partition: 0,
 					Offset:    0,
@@ -191,21 +202,21 @@ func TestConsumerGroupHandler_ConsumeClaim(t *testing.T) {
 			setupMock: func(session *MockConsumerGroupSession, claim *MockConsumerGroupClaim, ctx context.Context, cancel context.CancelFunc) {
 				claim.messages = make(chan *sarama.ConsumerMessage, 3)
 				claim.messages <- &sarama.ConsumerMessage{
-					Value:     []byte("message 1"),
+					Value:     []byte(value),
 					Topic:     "test-topic",
 					Partition: 0,
 					Offset:    0,
 					Timestamp: time.Now(),
 				}
 				claim.messages <- &sarama.ConsumerMessage{
-					Value:     []byte("message 2"),
+					Value:     []byte(value),
 					Topic:     "test-topic",
 					Partition: 0,
 					Offset:    1,
 					Timestamp: time.Now(),
 				}
 				claim.messages <- &sarama.ConsumerMessage{
-					Value:     []byte("message 3"),
+					Value:     []byte(value),
 					Topic:     "test-topic",
 					Partition: 0,
 					Offset:    2,

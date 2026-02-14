@@ -8,18 +8,18 @@ import (
 	"music-service/internal/repository/postgres"
 )
 
-type handler struct {
+type albumHandler struct {
 	pb.UnimplementedMusicServiceServer
 	postgres.Repository
 }
 
-func NewHandler(repository postgres.Repository) pb.MusicServiceServer {
-	return &handler{
+func NewAlbumHandler(repository postgres.Repository) pb.MusicServiceServer {
+	return &albumHandler{
 		Repository: repository,
 	}
 }
 
-func (h *handler) GetAlbumList(ctx context.Context, req *pb.GetAlbumsRequest) (*pb.GetAlbumsResponse, error) {
+func (h *albumHandler) GetAlbumList(ctx context.Context, req *pb.GetAlbumsRequest) (*pb.GetAlbumsResponse, error) {
 	log.Println("request received")
 
 	if err := ctx.Err(); err != nil {

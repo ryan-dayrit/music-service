@@ -4,10 +4,10 @@ import (
 	"context"
 	"log"
 
-	"music-service/internal/config"
-	handler "music-service/internal/handler/kafka"
-
 	"github.com/spf13/cobra"
+
+	"music-service/internal/config"
+	"music-service/internal/handler/kafka"
 )
 
 func NewConsumerCommand() *cobra.Command {
@@ -23,7 +23,7 @@ func NewConsumerCommand() *cobra.Command {
 				log.Panicf("failed to load config %v", err)
 			}
 
-			handler, err := handler.NewConsumerHandler(cfg.Kafka)
+			handler, err := kafka.NewConsumerHandler(cfg.Kafka)
 			if err != nil {
 				log.Panicf("Error creating Kafka handler: %v", err)
 			}
