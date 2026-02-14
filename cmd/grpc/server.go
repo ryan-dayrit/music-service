@@ -16,9 +16,9 @@ import (
 	"music-service/pkg/postgres/db"
 )
 
-func NewServerCommand() *cobra.Command {
+func NewGrpcServerCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "server",
+		Use:   "grpc_server",
 		Short: "starts the gRPC server",
 		Long:  `starts the gRPC server which hosts MusicService which returns albums`,
 		Run: func(cmd *cobra.Command, args []string) {
@@ -45,7 +45,7 @@ func NewServerCommand() *cobra.Command {
 			defer db.Close()
 
 			repository := postgres.NewRepository(db)
-			handler := handler.NewHandler(repository)
+			handler := handler.NewAlbumHandler(repository)
 
 			pb.RegisterMusicServiceServer(s, handler)
 			if err := s.Serve(listener); err != nil {

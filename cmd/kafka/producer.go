@@ -4,10 +4,14 @@ import (
 	"context"
 	"log"
 
-	"music-service/internal/config"
-	handler "music-service/internal/handler/kafka"
+	"math/rand/v2"
 
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"music-service/gen/pb"
+	"music-service/internal/config"
+	"music-service/internal/handler/kafka"
 )
 
 func NewProducerCommand() *cobra.Command {
@@ -23,12 +27,18 @@ func NewProducerCommand() *cobra.Command {
 				log.Panicf("failed to load config %v", err)
 			}
 
-			producer, err := handler.NewProducer(cfg.Kafka)
+			producer, err := kafka.NewProducer(cfg.Kafka)
 			if err != nil {
 				log.Panicf("Error creating Kafka producer: %v", err)
 			}
 
-			producer.Produce(ctx)
+			album := &pb.Album{
+				Id:     rand.Int32(),
+				Title:  uuid.NewString(),
+				Artist: uuid.NewString(),
+				Price:  rand.Float32(),
+			}
+			producer.Produce(ctx, album)
 		},
 	}
 }

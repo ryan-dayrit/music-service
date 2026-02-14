@@ -1,6 +1,11 @@
 # music-service
 practice Golang application for gRPC service to read from PostgreSQL database
 
+# rest api using Fiber 
+  * https://dev.to/koddr/build-a-restful-api-on-go-fiber-postgresql-jwt-and-swagger-docs-in-isolated-docker-containers-475j
+  * https://github.com/koddr/tutorial-go-fiber-rest-api
+  * https://medium.com/@christian.asterisk/building-a-scalable-monolithic-backend-with-go-fiber-folder-structure-explained-5d1023eafa5e
+
 # deploying kafka using docker compose 
   * https://docs.docker.com/guides/kafka/
   * https://medium.com/@darshak.kachchhi/setting-up-a-kafka-cluster-using-docker-compose-a-step-by-step-guide-a1ee5972b122

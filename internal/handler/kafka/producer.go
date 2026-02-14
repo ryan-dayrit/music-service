@@ -4,15 +4,16 @@ import (
 	"context"
 	"log"
 
+	"github.com/IBM/sarama"
+	"google.golang.org/protobuf/proto"
+
 	"music-service/gen/pb"
 	"music-service/pkg/kafka"
-
-	"math/rand/v2"
-
-	"github.com/IBM/sarama"
-	"github.com/google/uuid"
-	"google.golang.org/protobuf/proto"
 )
+
+type Producer interface {
+	Produce(ctx context.Context, album *pb.Album)
+}
 
 type producer struct {
 	cfg          kafka.Config
@@ -27,13 +28,7 @@ func NewProducer(cfg kafka.Config) (*producer, error) {
 	return &producer{cfg: cfg, syncProducer: syncProducer}, nil
 }
 
-func (p *producer) Produce(ctx context.Context) {
-	album := &pb.Album{
-		Id:     rand.Int32(),
-		Title:  uuid.NewString(),
-		Artist: uuid.NewString(),
-		Price:  rand.Float32(),
-	}
+func (p *producer) Produce(ctx context.Context, album *pb.Album) {
 	marshaledAlbum, err := proto.Marshal(album)
 	if err != nil {
 		log.Panicf("Failed to marshal album: %v", err)

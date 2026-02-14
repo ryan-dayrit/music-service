@@ -13,9 +13,9 @@ import (
 	"music-service/internal/config"
 )
 
-func NewClientCommand() *cobra.Command {
+func NewGrpcClientCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "client",
+		Use:   "grpc_client",
 		Short: "shows the albums returned from the MusicService gRPC server",
 		Long:  `calls the MusicService gRPC server and shows the albums returned`,
 		Run: func(cmd *cobra.Command, args []string) {
