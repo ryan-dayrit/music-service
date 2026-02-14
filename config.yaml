@@ -10,3 +10,10 @@ database:
   ssl_mode: disable
   password: umagos
   host: localhost
+
+consumer:
+  brokers: localhost:9092 
+  consumer_group: test-consumer-group
+  topics: test-topic
+  assignor: roundrobin
+  oldest: true

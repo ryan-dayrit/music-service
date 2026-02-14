@@ -34,7 +34,7 @@ func NewHandler(cfg kafka.Config) (*handler, error) {
 func (h *handler) Consume(ctx context.Context) {
 	ctx, cancel := context.WithCancel(ctx)
 
-	consumer := kafka.ConsumerGroupHandler{
+	consumerGroupHandler := kafka.ConsumerGroupHandler{
 		Ready: make(chan bool),
 	}
 
@@ -44,25 +44,20 @@ func (h *handler) Consume(ctx context.Context) {
 	go func() {
 		defer wg.Done()
 		for {
-			// `Consume` should be called inside an infinite loop, when a
-			// server-side rebalance happens, the consumer session will need to be
-			// recreated to get the new claims
-			if err := h.consumerGroup.Consume(ctx, strings.Split(h.cfg.Topics, ","), &consumer); err != nil {
+			if err := h.consumerGroup.Consume(ctx, strings.Split(h.cfg.Topics, ","), &consumerGroupHandler); err != nil {
 				if errors.Is(err, sarama.ErrClosedConsumerGroup) {
 					return
 				}
 				log.Panicf("Error from consumer: %v", err)
 			}
-			// check if context was cancelled, signaling that the consumer should stop
 			if ctx.Err() != nil {
 				return
 			}
-			consumer.Ready = make(chan bool)
+			consumerGroupHandler.Ready = make(chan bool)
 		}
 	}()
 
-	<-consumer.Ready // Await till the consumer has been set up
-	log.Println("Sarama consumer up and running!...")
+	<-consumerGroupHandler.Ready
 
 	sigusr1 := make(chan os.Signal, 1)
 	signal.Notify(sigusr1, syscall.SIGUSR1)
