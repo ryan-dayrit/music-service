@@ -92,7 +92,7 @@ func TestConsumerGroupHandler_Setup(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cgh := &ConsumerGroupHandler{
+			cgh := &consumerGroupHandler{
 				Ready: make(chan bool),
 			}
 
@@ -125,7 +125,7 @@ func TestConsumerGroupHandler_Cleanup(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cgh := &ConsumerGroupHandler{
+			cgh := &consumerGroupHandler{
 				Ready: make(chan bool),
 			}
 
@@ -228,7 +228,7 @@ func TestConsumerGroupHandler_ConsumeClaim(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cgh := &ConsumerGroupHandler{
+			cgh := &consumerGroupHandler{
 				Ready: make(chan bool),
 			}
 
@@ -254,7 +254,7 @@ func TestConsumerGroupHandler_ConsumeClaim(t *testing.T) {
 }
 
 func TestConsumerGroupHandler_NewInstance(t *testing.T) {
-	cgh := &ConsumerGroupHandler{
+	cgh := &consumerGroupHandler{
 		Ready: make(chan bool),
 	}
 

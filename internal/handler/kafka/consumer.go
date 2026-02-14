@@ -15,26 +15,26 @@ import (
 	"music-service/pkg/kafka"
 )
 
-type handler struct {
+type consumerHandler struct {
 	cfg           kafka.Config
 	consumerGroup sarama.ConsumerGroup
 }
 
-func NewHandler(cfg kafka.Config) (*handler, error) {
+func NewConsumerHandler(cfg kafka.Config) (*consumerHandler, error) {
 	consumerGroup, err := kafka.NewConsumerGroup(cfg)
 	if err != nil {
 		return nil, err
 	}
-	return &handler{
+	return &consumerHandler{
 		cfg:           cfg,
 		consumerGroup: consumerGroup,
 	}, nil
 }
 
-func (h *handler) Consume(ctx context.Context) {
+func (h *consumerHandler) Consume(ctx context.Context) {
 	ctx, cancel := context.WithCancel(ctx)
 
-	consumerGroupHandler := kafka.ConsumerGroupHandler{
+	consumerGroupHandler := consumerGroupHandler{
 		Ready: make(chan bool),
 	}
 
