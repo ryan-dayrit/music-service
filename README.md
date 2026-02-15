@@ -1,20 +1,32 @@
 # music-service
-practice Golang application for gRPC, REST, Kafka, PostgreSQL
+practice Golang application for gRPC, REST, Kafka, PostgreSQL, Protobuf
 
-# Processing flow 
+# Processing Flow 
+Components 
+1. PostgreSQL database in minikube 
+2. Kafka in docker
+3. gRPC API (internal)
+4. REST API (external)
+5. Kafka consumer
+   
 Writes 
 1. REST API POST/PUT receiver for json payloads
 2. REST API publishes proto to Kafka
-3. Kafka consumer consumes the proto and stores in PostgreSQL
+3. Kafka consumer consumes the proto from kafka and creates/updates PostgreSQL
 
 Reads 
-1. gRPC API which reads from the PostgreSQL database and returns protos in json format
-
-CLI Testers 
+1. gRPC API which reads from the PostgreSQL database using Sqlx framework and returns protos in json format
+2. REST API which reads from the PostgreSQL database using ORM Go framework and returns protos in json format
+   
+# CLI Testers
 1. REST API client which sends POST/PUT requests
 2. gRPC API client which calls gRPC API and prints response
 3. Kakfa producer which sends marshalled protos to the Kafka topic
-4. PostgreSQL client which reads the PostgreSQL database direcly
+4. PostgreSQL client which reads gets all albums from the PostgreSQL database direcly
+5. PostgreSQL client which reads gets album by id from the PostgreSQL database direcly
+6. PostgreSQL client which inserts PostgreSQL database direcly
+7. REST API client which sends put/post requests to REST API album endpoint
+8. REST API client which sends put/post requests to REST API albums endpoint
    
 # rest api using Fiber 
   * https://dev.to/koddr/build-a-restful-api-on-go-fiber-postgresql-jwt-and-swagger-docs-in-isolated-docker-containers-475j
@@ -102,6 +114,7 @@ CLI Testers
   * https://www.digitalocean.com/community/tutorials/how-to-use-the-cobra-package-in-go
   * https://cobra.dev/docs/tutorials/getting-started/
   * https://github.com/mwiater/golangcliscaffold/tree/step3
+
 
 
 
