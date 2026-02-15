@@ -9,7 +9,7 @@ import (
 
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 
-	pkg_kafka "music-service/pkg/kafka"
+	"music-service/pkg/kafka/message"
 )
 
 type ack struct {
@@ -19,11 +19,11 @@ type ack struct {
 
 type consumer struct {
 	confluentConsumer     *kafka.Consumer
-	messageValueProcessor pkg_kafka.MessageValueProcessor
+	messageValueProcessor message.MessageValueProcessor
 	parallelWorkers       int
 }
 
-func NewConsumer(confluentConsumer *kafka.Consumer, messageValueProcessor pkg_kafka.MessageValueProcessor, parallelWorkers int) *consumer {
+func NewConsumer(confluentConsumer *kafka.Consumer, messageValueProcessor message.MessageValueProcessor, parallelWorkers int) *consumer {
 	return &consumer{
 		confluentConsumer:     confluentConsumer,
 		messageValueProcessor: messageValueProcessor,
@@ -58,7 +58,7 @@ func (c *consumer) Consume(ctx context.Context) error {
 						msg.TopicPartition.Offset,
 					)
 
-					c.messageValueProcessor.ProcessMessageValue(msg.Value)
+					c.messageValueProcessor.Process(msg.Value)
 
 					acks <- ack{
 						tp:  msg.TopicPartition,

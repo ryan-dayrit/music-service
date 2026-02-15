@@ -1,4 +1,4 @@
-package kafka
+package message
 
 import (
 	"log"
@@ -20,7 +20,7 @@ func NewMessageValueProcessor(repository orm.Repository) *MessageValueProcessor 
 	return &MessageValueProcessor{repository: repository}
 }
 
-func (p *MessageValueProcessor) ProcessMessageValue(messageValue []byte) {
+func (p *MessageValueProcessor) Process(messageValue []byte) {
 	protoAlbum := &pb.Album{}
 	if err := proto.Unmarshal(messageValue, protoAlbum); err != nil {
 		log.Fatalf("failed to unmarshal to album: %v", err)

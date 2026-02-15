@@ -5,7 +5,7 @@ import (
 
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 
-	pkg_kafka "music-service/pkg/kafka"
+	"music-service/pkg/kafka/message"
 )
 
 // MockMessageValueProcessor is a mock implementation for testing
@@ -14,7 +14,7 @@ type MockMessageValueProcessor struct {
 	ProcessCount      int
 }
 
-func (m *MockMessageValueProcessor) ProcessMessageValue(msg []byte) {
+func (m *MockMessageValueProcessor) Process(msg []byte) {
 	m.ProcessedMessages = append(m.ProcessedMessages, msg)
 	m.ProcessCount++
 }
@@ -24,7 +24,7 @@ func TestNewConsumer(t *testing.T) {
 	tests := []struct {
 		name            string
 		consumer        *kafka.Consumer
-		processor       pkg_kafka.MessageValueProcessor
+		processor       message.MessageValueProcessor
 		parallelWorkers int
 	}{
 		{
@@ -100,7 +100,7 @@ func TestConsumer_Struct(t *testing.T) {
 	tests := []struct {
 		name            string
 		consumer        *kafka.Consumer
-		processor       pkg_kafka.MessageValueProcessor
+		processor       message.MessageValueProcessor
 		parallelWorkers int
 	}{
 		{
@@ -213,7 +213,7 @@ func TestAck_Struct(t *testing.T) {
 func TestAck_OffsetIncrement(t *testing.T) {
 	topic := "test-topic"
 	originalOffset := kafka.Offset(100)
-	
+
 	a := ack{
 		tp: kafka.TopicPartition{
 			Topic:     &topic,
@@ -247,7 +247,7 @@ func TestMockMessageValueProcessor(t *testing.T) {
 	}
 
 	for _, msg := range testMessages {
-		mock.ProcessMessageValue(msg)
+		mock.Process(msg)
 	}
 
 	if mock.ProcessCount != 3 {
@@ -260,7 +260,7 @@ func TestMockMessageValueProcessor(t *testing.T) {
 
 	for i, msg := range testMessages {
 		if string(mock.ProcessedMessages[i]) != string(msg) {
-			t.Errorf("Message %d mismatch: expected '%s', got '%s'", 
+			t.Errorf("Message %d mismatch: expected '%s', got '%s'",
 				i, string(msg), string(mock.ProcessedMessages[i]))
 		}
 	}
@@ -270,8 +270,8 @@ func TestMockMessageValueProcessor(t *testing.T) {
 func TestMockMessageValueProcessor_EmptyMessage(t *testing.T) {
 	mock := &MockMessageValueProcessor{}
 
-	mock.ProcessMessageValue([]byte{})
-	mock.ProcessMessageValue(nil)
+	mock.Process([]byte{})
+	mock.Process(nil)
 
 	if mock.ProcessCount != 2 {
 		t.Errorf("Expected ProcessCount=2, got %d", mock.ProcessCount)
@@ -292,7 +292,7 @@ func TestMockMessageValueProcessor_LargeMessage(t *testing.T) {
 		largeMsg[i] = byte(i % 256)
 	}
 
-	mock.ProcessMessageValue(largeMsg)
+	mock.Process(largeMsg)
 
 	if mock.ProcessCount != 1 {
 		t.Errorf("Expected ProcessCount=1, got %d", mock.ProcessCount)
@@ -309,7 +309,7 @@ func TestMockMessageValueProcessor_LargeMessage(t *testing.T) {
 
 // TestMockMessageValueProcessor_InterfaceCompliance tests interface compliance
 func TestMockMessageValueProcessor_InterfaceCompliance(t *testing.T) {
-	var _ pkg_kafka.MessageValueProcessor = (*MockMessageValueProcessor)(nil)
+	var _ message.MessageValueProcessor = (*MockMessageValueProcessor)(nil)
 }
 
 // TestConsumer_FieldsArePrivate tests that consumer fields are unexported
@@ -317,12 +317,12 @@ func TestConsumer_FieldsArePrivate(t *testing.T) {
 	// This test ensures that the consumer struct has unexported fields
 	// If fields were exported, this would be a design smell
 	c := NewConsumer(nil, nil, 0)
-	
+
 	// Access through the struct should work (same package)
 	_ = c.confluentConsumer
 	_ = c.messageValueProcessor
 	_ = c.parallelWorkers
-	
+
 	// This test passes if compilation succeeds
 }
 
@@ -331,7 +331,7 @@ func TestNewConsumer_ReturnsNonNilPointer(t *testing.T) {
 	testCases := []struct {
 		name            string
 		consumer        *kafka.Consumer
-		processor       pkg_kafka.MessageValueProcessor
+		processor       message.MessageValueProcessor
 		parallelWorkers int
 	}{
 		{"all nil", nil, nil, 0},

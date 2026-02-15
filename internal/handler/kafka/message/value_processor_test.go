@@ -1,4 +1,4 @@
-package kafka
+package message
 
 import (
 	"errors"
@@ -119,7 +119,7 @@ func TestMessageValueProcessor_ProcessMessageValue_CreateNewAlbum(t *testing.T) 
 		}
 
 		// Process the message value
-		processor.ProcessMessageValue(messageValue)
+		processor.Process(messageValue)
 
 		// Verify GetById was called
 		if mockRepo.getByIdCalls != 1 {
@@ -182,7 +182,7 @@ func TestMessageValueProcessor_ProcessMessageValue_UpdateExistingAlbum(t *testin
 		}
 
 		// Process the message value
-		processor.ProcessMessageValue(messageValue)
+		processor.Process(messageValue)
 
 		// Verify GetById was called
 		if mockRepo.getByIdCalls != 1 {
@@ -238,7 +238,7 @@ func TestMessageValueProcessor_ProcessMessageValue_WithZeroValues(t *testing.T) 
 		}
 
 		// Process the message value
-		processor.ProcessMessageValue(messageValue)
+		processor.Process(messageValue)
 
 		// Verify GetById was called
 		if mockRepo.getByIdCalls != 1 {
@@ -283,7 +283,7 @@ func TestMessageValueProcessor_ProcessMessageValue_PriceGeneration(t *testing.T)
 		}
 
 		// Process the message value
-		processor.ProcessMessageValue(messageValue)
+		processor.Process(messageValue)
 
 		// Verify price is within range [0, 1)
 		if capturedPrice < 0 || capturedPrice >= 1 {
@@ -323,7 +323,7 @@ func TestMessageValueProcessor_ProcessMessageValue_MultipleAlbums(t *testing.T) 
 			if err != nil {
 				t.Fatalf("Failed to marshal proto album: %v", err)
 			}
-			processor.ProcessMessageValue(messageValue)
+			processor.Process(messageValue)
 		}
 
 		// Verify all albums were created

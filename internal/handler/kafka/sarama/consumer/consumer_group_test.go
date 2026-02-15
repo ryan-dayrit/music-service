@@ -7,7 +7,7 @@ import (
 
 	"github.com/IBM/sarama"
 
-	"music-service/internal/handler/kafka"
+	"music-service/internal/handler/kafka/message"
 )
 
 // MockConsumerGroupSession is a mock implementation of sarama.ConsumerGroupSession
@@ -98,7 +98,7 @@ func (m *MockMessageValueProcessor) ProcessMessageValue(value []byte) {
 func TestNewConsumerGroupHandler(t *testing.T) {
 	t.Run("creates handler successfully", func(t *testing.T) {
 		ready := make(chan bool)
-		processor := &kafka.MessageValueProcessor{}
+		processor := &message.MessageValueProcessor{}
 
 		handler := NewConsumerGroupHandler(ready, processor)
 
@@ -133,7 +133,7 @@ func TestNewConsumerGroupHandler(t *testing.T) {
 func TestConsumerGroupHandler_Setup(t *testing.T) {
 	t.Run("closes ready channel on setup", func(t *testing.T) {
 		ready := make(chan bool)
-		processor := &kafka.MessageValueProcessor{}
+		processor := &message.MessageValueProcessor{}
 		handler := NewConsumerGroupHandler(ready, processor)
 
 		session := NewMockConsumerGroupSession()
@@ -155,7 +155,7 @@ func TestConsumerGroupHandler_Setup(t *testing.T) {
 
 	t.Run("setup returns no error", func(t *testing.T) {
 		ready := make(chan bool)
-		processor := &kafka.MessageValueProcessor{}
+		processor := &message.MessageValueProcessor{}
 		handler := NewConsumerGroupHandler(ready, processor)
 
 		session := NewMockConsumerGroupSession()
@@ -171,7 +171,7 @@ func TestConsumerGroupHandler_Setup(t *testing.T) {
 func TestConsumerGroupHandler_Cleanup(t *testing.T) {
 	t.Run("cleanup returns no error", func(t *testing.T) {
 		ready := make(chan bool)
-		processor := &kafka.MessageValueProcessor{}
+		processor := &message.MessageValueProcessor{}
 		handler := NewConsumerGroupHandler(ready, processor)
 
 		session := NewMockConsumerGroupSession()
@@ -187,7 +187,7 @@ func TestConsumerGroupHandler_Cleanup(t *testing.T) {
 func TestConsumerGroupHandler_ConsumeClaim(t *testing.T) {
 	t.Run("stops consuming when context is done", func(t *testing.T) {
 		ready := make(chan bool)
-		processor := &kafka.MessageValueProcessor{}
+		processor := &message.MessageValueProcessor{}
 		handler := NewConsumerGroupHandler(ready, processor)
 
 		session := NewMockConsumerGroupSession()
@@ -205,7 +205,7 @@ func TestConsumerGroupHandler_ConsumeClaim(t *testing.T) {
 
 	t.Run("handles closed message channel", func(t *testing.T) {
 		ready := make(chan bool)
-		processor := &kafka.MessageValueProcessor{}
+		processor := &message.MessageValueProcessor{}
 		handler := NewConsumerGroupHandler(ready, processor)
 
 		session := NewMockConsumerGroupSession()
@@ -225,7 +225,7 @@ func TestConsumerGroupHandler_ConsumeClaim(t *testing.T) {
 func TestConsumerGroupHandler_StructFields(t *testing.T) {
 	t.Run("handler has required fields", func(t *testing.T) {
 		ready := make(chan bool)
-		processor := &kafka.MessageValueProcessor{}
+		processor := &message.MessageValueProcessor{}
 		handler := NewConsumerGroupHandler(ready, processor)
 
 		if handler.Ready == nil {
@@ -241,7 +241,7 @@ func TestConsumerGroupHandler_StructFields(t *testing.T) {
 func TestConsumerGroupHandler_InterfaceCompliance(t *testing.T) {
 	t.Run("implements sarama.ConsumerGroupHandler interface", func(t *testing.T) {
 		ready := make(chan bool)
-		processor := &kafka.MessageValueProcessor{}
+		processor := &message.MessageValueProcessor{}
 		handler := NewConsumerGroupHandler(ready, processor)
 
 		var _ sarama.ConsumerGroupHandler = handler
@@ -251,7 +251,7 @@ func TestConsumerGroupHandler_InterfaceCompliance(t *testing.T) {
 func TestConsumerGroupHandler_ConcurrentMessages(t *testing.T) {
 	t.Run("handles empty message stream", func(t *testing.T) {
 		ready := make(chan bool)
-		processor := &kafka.MessageValueProcessor{}
+		processor := &message.MessageValueProcessor{}
 		handler := NewConsumerGroupHandler(ready, processor)
 
 		session := NewMockConsumerGroupSession()

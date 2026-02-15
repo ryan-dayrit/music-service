@@ -12,7 +12,7 @@ import (
 
 	"github.com/IBM/sarama"
 
-	internal_kafka "music-service/internal/handler/kafka"
+	"music-service/internal/handler/kafka/message"
 	"music-service/internal/repository/postgres/orm"
 	"music-service/pkg/kafka"
 	sarama_wrapper "music-service/pkg/kafka/sarama"
@@ -40,7 +40,7 @@ func NewConsumerHandler(cfg kafka.Config, repository orm.Repository) (kafka.Cons
 func (h *consumerHandler) Consume(ctx context.Context) error {
 	ctx, cancel := context.WithCancel(ctx)
 
-	messageValueProcessor := internal_kafka.NewMessageValueProcessor(h.repository)
+	messageValueProcessor := message.NewMessageValueProcessor(h.repository)
 	consumerGroupHandler := NewConsumerGroupHandler(make(chan bool), messageValueProcessor)
 
 	consumptionIsPaused := false

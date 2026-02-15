@@ -5,15 +5,15 @@ import (
 
 	"github.com/IBM/sarama"
 
-	"music-service/internal/handler/kafka"
+	"music-service/internal/handler/kafka/message"
 )
 
 type consumerGroupHandler struct {
 	Ready                 chan bool
-	MessageValueProcessor *kafka.MessageValueProcessor
+	MessageValueProcessor *message.MessageValueProcessor
 }
 
-func NewConsumerGroupHandler(ready chan bool, messageValueProcessor *kafka.MessageValueProcessor) *consumerGroupHandler {
+func NewConsumerGroupHandler(ready chan bool, messageValueProcessor *message.MessageValueProcessor) *consumerGroupHandler {
 	return &consumerGroupHandler{
 		Ready:                 ready,
 		MessageValueProcessor: messageValueProcessor,
@@ -38,7 +38,7 @@ func (h *consumerGroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession,
 				return nil
 			}
 
-			h.MessageValueProcessor.ProcessMessageValue(message.Value)
+			h.MessageValueProcessor.Process(message.Value)
 			session.MarkMessage(message, "")
 		case <-session.Context().Done():
 			return nil

@@ -5,7 +5,7 @@ import (
 
 	ext_kafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
 
-	internal_kafka "music-service/internal/handler/kafka"
+	"music-service/internal/handler/kafka/message"
 	"music-service/internal/repository/postgres/orm"
 	"music-service/pkg/kafka"
 	"music-service/pkg/kafka/confluent"
@@ -37,7 +37,7 @@ func NewConsumerHandler(cfg kafka.Config, repository orm.Repository) (kafka.Cons
 		return nil, err
 	}
 
-	messageValueProcessor := internal_kafka.NewMessageValueProcessor(repository)
+	messageValueProcessor := message.NewMessageValueProcessor(repository)
 
 	consumerHandler := confluent.NewConsumer(confluentConsumer, messageValueProcessor, 5)
 	return consumerHandler, nil
