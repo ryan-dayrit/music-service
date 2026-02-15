@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"music-service/internal/config"
-	"music-service/internal/handler/kafka/sarama/producer"
+	"music-service/internal/handler/kafka/confluent/producer"
 	"music-service/internal/repository/postgres/orm"
 	"music-service/internal/routes"
 	v1 "music-service/internal/routes/v1"

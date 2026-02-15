@@ -26,6 +26,7 @@ func init() {
 	rootCmd.AddCommand(grpc.NewGrpcServerCommand())
 
 	rootCmd.AddCommand(confluent.NewKafkaConsumerCommand())
+	rootCmd.AddCommand(confluent.NewKafkaProducerCommand())
 
 	rootCmd.AddCommand(sarama.NewKafkaConsumerCommand())
 	rootCmd.AddCommand(sarama.NewKafkaProducerCommand())
