@@ -6,8 +6,8 @@ Components
 1. PostgreSQL database in minikube 
 2. Kafka in docker
 3. gRPC API (internal)
-4. REST API (external)
-5. Kafka consumer
+4. REST API (external) using fiber library
+5. Kafka consumer using IBM/sarama library
    
 Writes 
 1. REST API POST/PUT receiver for json payloads
@@ -15,8 +15,8 @@ Writes
 3. Kafka consumer consumes the proto from kafka and creates/updates PostgreSQL
 
 Reads 
-1. gRPC API which reads from the PostgreSQL database using Sqlx framework and returns protos in json format
-2. REST API which reads from the PostgreSQL database using ORM Go framework and returns protos in json format
+1. gRPC API which reads from the PostgreSQL database using Sqlx library and returns protos in json format
+2. REST API which reads from the PostgreSQL database using ORM library and returns protos in json format
    
 # CLI Testers
 1. REST API client which sends POST/PUT requests
@@ -114,6 +114,7 @@ Reads
   * https://www.digitalocean.com/community/tutorials/how-to-use-the-cobra-package-in-go
   * https://cobra.dev/docs/tutorials/getting-started/
   * https://github.com/mwiater/golangcliscaffold/tree/step3
+
 
 
 
