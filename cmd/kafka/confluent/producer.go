@@ -1,4 +1,4 @@
-package sarama
+package confluent
 
 import (
 	"context"
@@ -10,14 +10,14 @@ import (
 
 	"music-service/gen/pb"
 	"music-service/internal/config"
-	"music-service/internal/handler/kafka/sarama/producer"
+	"music-service/internal/handler/kafka/confluent/producer"
 )
 
 func NewKafkaProducerCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "kafka-producer-sarama",
-		Short: "starts the kafka producer implemented with the sarama library",
-		Long:  `starts the kafka producer which sends messages to topics using the sarama library`,
+		Use:   "kafka-producer-confluent",
+		Short: "starts the kafka producer implemented with the confluent library",
+		Long:  `starts the kafka producer which sends messages to topics using the confluent library`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := context.Background()
 
@@ -28,7 +28,7 @@ func NewKafkaProducerCommand() *cobra.Command {
 
 			producerHandler, err := producer.NewProducerHandler(cfg.Kafka)
 			if err != nil {
-				log.Panicf("error creating sarama producer handler: %v", err)
+				log.Panicf("error creating confluent producer handler: %v", err)
 			}
 
 			album := &pb.Album{
