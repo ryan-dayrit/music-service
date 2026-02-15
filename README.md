@@ -3,12 +3,12 @@ practice Golang application for gRPC, REST, Kafka, PostgreSQL, Protobuf
 
 # Processing Flow 
 Components 
-1. PostgreSQL database in minikube 
-2. Kafka in docker
-3. gRPC API (internal)
-4. REST API (external) using fiber library
-5. Kafka consumer using IBM/sarama library
-6. Kafka consumer using confluent library
+1. PostgreSQL database in minikube with DDL/DML initialization scripts
+2. Kafka in docker with a topic and a consumer group
+3. gRPC API (internal) to service the data in the Postgres datanase 
+4. REST API (external) using fiber library to receive JSON payloads and enqueue a Protobuf message to a kakfa topic
+5. Kafka consumer using IBM/sarama library to process Protobuf messages from a Kafka topic
+6. Kafka consumer using confluent library to process Protobuf messages from a Kafka topic
    
 Writes 
 1. REST API POST/PUT receiver for json payloads
@@ -28,3 +28,4 @@ Reads
 6. PostgreSQL client which inserts PostgreSQL database direcly
 7. REST API client which sends put/post requests to REST API album endpoint
 8. REST API client which sends put/post requests to REST API albums endpoint
+
