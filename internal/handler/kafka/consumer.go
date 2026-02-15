@@ -12,31 +12,33 @@ import (
 
 	"github.com/IBM/sarama"
 
+	"music-service/internal/repository/postgres/orm"
 	"music-service/pkg/kafka"
 )
 
 type consumerHandler struct {
 	cfg           kafka.Config
 	consumerGroup sarama.ConsumerGroup
+	repository    orm.Repository
 }
 
-func NewConsumerHandler(cfg kafka.Config) (*consumerHandler, error) {
+func NewConsumerHandler(cfg kafka.Config, repository orm.Repository) (*consumerHandler, error) {
 	consumerGroup, err := kafka.NewConsumerGroup(cfg)
 	if err != nil {
 		return nil, err
 	}
+
 	return &consumerHandler{
 		cfg:           cfg,
 		consumerGroup: consumerGroup,
+		repository:    repository,
 	}, nil
 }
 
 func (h *consumerHandler) Consume(ctx context.Context) {
 	ctx, cancel := context.WithCancel(ctx)
 
-	consumerGroupHandler := consumerGroupHandler{
-		Ready: make(chan bool),
-	}
+	consumerGroupHandler := NewConsumerGroupHandler(make(chan bool), h.repository)
 
 	consumptionIsPaused := false
 	wg := &sync.WaitGroup{}
@@ -44,7 +46,7 @@ func (h *consumerHandler) Consume(ctx context.Context) {
 	go func() {
 		defer wg.Done()
 		for {
-			if err := h.consumerGroup.Consume(ctx, strings.Split(h.cfg.Topics, ","), &consumerGroupHandler); err != nil {
+			if err := h.consumerGroup.Consume(ctx, strings.Split(h.cfg.Topics, ","), consumerGroupHandler); err != nil {
 				if errors.Is(err, sarama.ErrClosedConsumerGroup) {
 					return
 				}

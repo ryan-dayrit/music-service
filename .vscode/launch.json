@@ -43,7 +43,25 @@
             "request": "launch",
             "mode": "debug",
             "program": "main.go",
-            "args": ["postgres-tool"]
+            "args": ["postgres-get-all"]
+        },
+
+        {
+            "name": "Postgres Tool",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "main.go",
+            "args": ["postgres-get-by-id"]
+        },
+
+        {
+            "name": "Postgres Tool",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "main.go",
+            "args": ["postgres-insert"]
         },
 
         {

@@ -5,15 +5,15 @@ import (
 	"log"
 
 	"music-service/gen/pb"
-	"music-service/internal/repository/postgres"
+	"music-service/internal/repository/postgres/sqlx"
 )
 
 type albumHandler struct {
 	pb.UnimplementedMusicServiceServer
-	postgres.Repository
+	sqlx.Repository
 }
 
-func NewAlbumHandler(repository postgres.Repository) pb.MusicServiceServer {
+func NewAlbumHandler(repository sqlx.Repository) pb.MusicServiceServer {
 	return &albumHandler{
 		Repository: repository,
 	}
@@ -36,7 +36,7 @@ func (h *albumHandler) GetAlbumList(ctx context.Context, req *pb.GetAlbumsReques
 	}, nil
 }
 
-func getAlbumList(repository postgres.Repository) ([]*pb.Album, error) {
+func getAlbumList(repository sqlx.Repository) ([]*pb.Album, error) {
 	albums, err := repository.Read()
 	if err != nil {
 		return nil, err

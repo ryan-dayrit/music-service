@@ -2,10 +2,12 @@ package db
 
 import (
 	"testing"
+
+	"music-service/pkg/postgres"
 )
 
-func TestNewPostgresDB_Integration(t *testing.T) {
-	cfg := Config{
+func TestNewDB_Integration(t *testing.T) {
+	cfg := postgres.Config{
 		DriverName: "postgres",
 		User:       "ryandayrit",
 		DBName:     "practice",
@@ -14,7 +16,7 @@ func TestNewPostgresDB_Integration(t *testing.T) {
 		Host:       "localhost",
 	}
 
-	db, err := NewPostgresDB(cfg)
+	db, err := NewDB(cfg)
 	if err != nil {
 		t.Skipf("Skipping integration test: database connection failed: %v", err)
 		return
@@ -30,8 +32,8 @@ func TestNewPostgresDB_Integration(t *testing.T) {
 	}
 }
 
-func TestNewPostgresDB_InvalidHost(t *testing.T) {
-	cfg := Config{
+func TestNewDB_InvalidHost(t *testing.T) {
+	cfg := postgres.Config{
 		DriverName: "postgres",
 		User:       "testuser",
 		DBName:     "testdb",
@@ -40,7 +42,7 @@ func TestNewPostgresDB_InvalidHost(t *testing.T) {
 		Host:       "invalid-host-that-does-not-exist.local",
 	}
 
-	db, err := NewPostgresDB(cfg)
+	db, err := NewDB(cfg)
 	if err == nil {
 		if db != nil {
 			db.Close()
@@ -53,8 +55,8 @@ func TestNewPostgresDB_InvalidHost(t *testing.T) {
 	}
 }
 
-func TestNewPostgresDB_InvalidDatabase(t *testing.T) {
-	cfg := Config{
+func TestNewDB_InvalidDatabase(t *testing.T) {
+	cfg := postgres.Config{
 		DriverName: "postgres",
 		User:       "ryandayrit",
 		DBName:     "nonexistent_database_12345",
@@ -63,7 +65,7 @@ func TestNewPostgresDB_InvalidDatabase(t *testing.T) {
 		Host:       "localhost",
 	}
 
-	db, err := NewPostgresDB(cfg)
+	db, err := NewDB(cfg)
 	if err == nil {
 		if db != nil {
 			db.Close()
@@ -76,10 +78,10 @@ func TestNewPostgresDB_InvalidDatabase(t *testing.T) {
 	}
 }
 
-func TestNewPostgresDB_EmptyConfig(t *testing.T) {
-	cfg := Config{}
+func TestNewDB_EmptyConfig(t *testing.T) {
+	cfg := postgres.Config{}
 
-	db, err := NewPostgresDB(cfg)
+	db, err := NewDB(cfg)
 	if err == nil {
 		if db != nil {
 			db.Close()
@@ -92,8 +94,8 @@ func TestNewPostgresDB_EmptyConfig(t *testing.T) {
 	}
 }
 
-func TestNewPostgresDB_InvalidDriver(t *testing.T) {
-	cfg := Config{
+func TestNewDB_InvalidDriver(t *testing.T) {
+	cfg := postgres.Config{
 		DriverName: "invalid_driver",
 		User:       "testuser",
 		DBName:     "testdb",
@@ -102,7 +104,7 @@ func TestNewPostgresDB_InvalidDriver(t *testing.T) {
 		Host:       "localhost",
 	}
 
-	db, err := NewPostgresDB(cfg)
+	db, err := NewDB(cfg)
 	if err == nil {
 		if db != nil {
 			db.Close()
@@ -115,8 +117,8 @@ func TestNewPostgresDB_InvalidDriver(t *testing.T) {
 	}
 }
 
-func TestNewPostgresDB_ReturnType(t *testing.T) {
-	cfg := Config{
+func TestNewDB_ReturnType(t *testing.T) {
+	cfg := postgres.Config{
 		DriverName: "postgres",
 		User:       "ryandayrit",
 		DBName:     "practice",
@@ -125,7 +127,7 @@ func TestNewPostgresDB_ReturnType(t *testing.T) {
 		Host:       "localhost",
 	}
 
-	db, err := NewPostgresDB(cfg)
+	db, err := NewDB(cfg)
 	if err != nil {
 		t.Skipf("Skipping test: database not available: %v", err)
 		return
@@ -137,7 +139,7 @@ func TestNewPostgresDB_ReturnType(t *testing.T) {
 	}
 }
 
-func TestNewPostgresDB_DifferentSSLModes(t *testing.T) {
+func TestNewDB_DifferentSSLModes(t *testing.T) {
 	tests := []struct {
 		name    string
 		sslMode string
@@ -155,7 +157,7 @@ func TestNewPostgresDB_DifferentSSLModes(t *testing.T) {
 				t.Skip("Skipping SSL mode test - requires SSL configuration")
 			}
 
-			cfg := Config{
+			cfg := postgres.Config{
 				DriverName: "postgres",
 				User:       "ryandayrit",
 				DBName:     "practice",
@@ -164,7 +166,7 @@ func TestNewPostgresDB_DifferentSSLModes(t *testing.T) {
 				Host:       "localhost",
 			}
 
-			db, err := NewPostgresDB(cfg)
+			db, err := NewDB(cfg)
 			if err != nil {
 				t.Skipf("Skipping %s test: %v", tt.name, err)
 				return
@@ -178,8 +180,8 @@ func TestNewPostgresDB_DifferentSSLModes(t *testing.T) {
 	}
 }
 
-func TestNewPostgresDB_ConnectionPooling(t *testing.T) {
-	cfg := Config{
+func TestNewDB_ConnectionPooling(t *testing.T) {
+	cfg := postgres.Config{
 		DriverName: "postgres",
 		User:       "ryandayrit",
 		DBName:     "practice",
@@ -188,7 +190,7 @@ func TestNewPostgresDB_ConnectionPooling(t *testing.T) {
 		Host:       "localhost",
 	}
 
-	db, err := NewPostgresDB(cfg)
+	db, err := NewDB(cfg)
 	if err != nil {
 		t.Skipf("Skipping integration test: database connection failed: %v", err)
 		return
@@ -201,8 +203,8 @@ func TestNewPostgresDB_ConnectionPooling(t *testing.T) {
 	}
 }
 
-func TestNewPostgresDB_MultipleConnections(t *testing.T) {
-	cfg := Config{
+func TestNewDB_MultipleConnections(t *testing.T) {
+	cfg := postgres.Config{
 		DriverName: "postgres",
 		User:       "ryandayrit",
 		DBName:     "practice",
@@ -211,14 +213,14 @@ func TestNewPostgresDB_MultipleConnections(t *testing.T) {
 		Host:       "localhost",
 	}
 
-	db1, err := NewPostgresDB(cfg)
+	db1, err := NewDB(cfg)
 	if err != nil {
 		t.Skipf("Skipping integration test: database connection failed: %v", err)
 		return
 	}
 	defer db1.Close()
 
-	db2, err := NewPostgresDB(cfg)
+	db2, err := NewDB(cfg)
 	if err != nil {
 		t.Fatalf("Second connection failed: %v", err)
 	}
@@ -238,7 +240,7 @@ func TestNewPostgresDB_MultipleConnections(t *testing.T) {
 }
 
 func BenchmarkNewPostgresDB(b *testing.B) {
-	cfg := Config{
+	cfg := postgres.Config{
 		DriverName: "postgres",
 		User:       "ryandayrit",
 		DBName:     "practice",
@@ -247,7 +249,7 @@ func BenchmarkNewPostgresDB(b *testing.B) {
 		Host:       "localhost",
 	}
 
-	testDB, err := NewPostgresDB(cfg)
+	testDB, err := NewDB(cfg)
 	if err != nil {
 		b.Skipf("Skipping benchmark: database not available: %v", err)
 		return
@@ -256,7 +258,7 @@ func BenchmarkNewPostgresDB(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		db, err := NewPostgresDB(cfg)
+		db, err := NewDB(cfg)
 		if err != nil {
 			b.Fatalf("Connection failed: %v", err)
 		}

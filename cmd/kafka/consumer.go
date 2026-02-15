@@ -8,9 +8,11 @@ import (
 
 	"music-service/internal/config"
 	"music-service/internal/handler/kafka"
+	"music-service/internal/repository/postgres/orm"
+	"music-service/pkg/postgres/orm/db"
 )
 
-func NewConsumerCommand() *cobra.Command {
+func NewKafkaConsumerCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "kafka-consumer",
 		Short: "starts the kafka consumer",
@@ -23,7 +25,12 @@ func NewConsumerCommand() *cobra.Command {
 				log.Panicf("failed to load config %v", err)
 			}
 
-			handler, err := kafka.NewConsumerHandler(cfg.Kafka)
+			db := db.NewDB(cfg.Postgres)
+			defer db.Close()
+
+			repository := orm.NewRepository(db)
+
+			handler, err := kafka.NewConsumerHandler(cfg.Kafka, repository)
 			if err != nil {
 				log.Panicf("Error creating Kafka handler: %v", err)
 			}
