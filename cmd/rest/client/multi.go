@@ -1,4 +1,4 @@
-package rest
+package client
 
 import (
 	"bytes"
@@ -15,40 +15,46 @@ import (
 	"music-service/internal/config"
 )
 
-func NewRestClientCommand() *cobra.Command {
+func NewRestClientMultiCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "rest-client",
+		Use:   "rest-client-multi",
 		Short: "sends requests to the MusicService REST server",
-		Long:  `calls the MusicService REST server to create an album and shows the response`,
+		Long:  `calls the MusicService REST server to create multiple albums and shows the response`,
 		Run: func(cmd *cobra.Command, args []string) {
 			cfg, err := config.Load()
 			if err != nil {
 				log.Fatalf("failed to load config %v", err)
 			}
 
-			url := "http://" + cfg.Rest.ServerUrl + "/api/v1/album"
+			url := "http://" + cfg.Rest.ServerUrl + "/api/v1/albums"
 
-			sendAlbumRequest("POST", url)
-			sendAlbumRequest("PUT", url)
+			sendAlbumsRequest("POST", url)
+			sendAlbumsRequest("PUT", url)
 		},
 	}
 }
 
-func sendAlbumRequest(method string, url string) {
-	album := &pb.Album{
-		Id:     rand.Int32(),
-		Title:  uuid.NewString(),
-		Artist: uuid.NewString(),
-		Price:  rand.Float32(),
+func sendAlbumsRequest(method string, url string) {
+	albums := []*pb.Album{}
+
+	for i := 0; i < 10; i++ {
+		album := &pb.Album{
+			Id:     rand.Int32(),
+			Title:  uuid.NewString(),
+			Artist: uuid.NewString(),
+			Price:  rand.Float32(),
+		}
+		albums = append(albums, album)
 	}
-	jsonData, err := json.Marshal(&album)
+
+	jsonData, err := json.Marshal(&albums)
 	if err != nil {
-		log.Fatalf("failed to marshal album %v", err)
+		log.Fatalf("failed to marshal albums %v", err)
 	}
 
 	request, err := http.NewRequest(method, url, bytes.NewBuffer(jsonData))
 	if err != nil {
-		log.Fatalf("failed to %s album %v", method, err)
+		log.Fatalf("failed to %s albums %v", method, err)
 	}
 	request.Header.Set("Content-Type", "application/json")
 
