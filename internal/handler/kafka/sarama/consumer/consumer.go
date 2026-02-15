@@ -14,17 +14,17 @@ import (
 
 	internal_kafka "music-service/internal/handler/kafka"
 	"music-service/internal/repository/postgres/orm"
-	pkg_kafka "music-service/pkg/kafka"
+	"music-service/pkg/kafka"
 	sarama_wrapper "music-service/pkg/kafka/sarama"
 )
 
 type consumerHandler struct {
-	cfg           pkg_kafka.Config
+	cfg           kafka.Config
 	consumerGroup sarama.ConsumerGroup
 	repository    orm.Repository
 }
 
-func NewConsumerHandler(cfg pkg_kafka.Config, repository orm.Repository) (internal_kafka.ConsumerHandler, error) {
+func NewConsumerHandler(cfg kafka.Config, repository orm.Repository) (kafka.ConsumerHandler, error) {
 	consumerGroup, err := sarama_wrapper.NewConsumerGroup(cfg)
 	if err != nil {
 		return nil, err
@@ -37,10 +37,11 @@ func NewConsumerHandler(cfg pkg_kafka.Config, repository orm.Repository) (intern
 	}, nil
 }
 
-func (h *consumerHandler) Consume(ctx context.Context) {
+func (h *consumerHandler) Consume(ctx context.Context) error {
 	ctx, cancel := context.WithCancel(ctx)
 
-	consumerGroupHandler := NewConsumerGroupHandler(make(chan bool), h.repository)
+	messageValueProcessor := internal_kafka.NewMessageValueProcessor(h.repository)
+	consumerGroupHandler := NewConsumerGroupHandler(make(chan bool), messageValueProcessor)
 
 	consumptionIsPaused := false
 	wg := &sync.WaitGroup{}
@@ -86,6 +87,8 @@ func (h *consumerHandler) Consume(ctx context.Context) {
 	if err := h.consumerGroup.Close(); err != nil {
 		log.Panicf("Error closing client: %v", err)
 	}
+
+	return nil
 }
 
 func toggleConsumptionFlow(client sarama.ConsumerGroup, isPaused *bool) {

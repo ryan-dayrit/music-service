@@ -4,16 +4,16 @@ import (
 	"github.com/gofiber/fiber/v2"
 
 	"music-service/gen/pb"
-	"music-service/internal/handler/kafka"
+	"music-service/pkg/kafka"
 )
 
 type albumHandler struct {
-	producer kafka.ProducerHandler
+	producerHandler kafka.ProducerHandler
 }
 
-func NewAlbumHandler(producer kafka.ProducerHandler) *albumHandler {
+func NewAlbumHandler(producerHandler kafka.ProducerHandler) *albumHandler {
 	return &albumHandler{
-		producer: producer,
+		producerHandler: producerHandler,
 	}
 }
 
@@ -24,6 +24,6 @@ func (h *albumHandler) CreateAlbum(ctx *fiber.Ctx) error {
 			"error": "cannot parse JSON",
 		})
 	}
-	h.producer.Produce(ctx.Context(), newAlbum)
+	h.producerHandler.Produce(ctx.Context(), newAlbum)
 	return ctx.Status(fiber.StatusCreated).JSON(newAlbum)
 }

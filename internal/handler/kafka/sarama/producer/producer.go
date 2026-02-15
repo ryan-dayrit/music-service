@@ -8,17 +8,16 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	"music-service/gen/pb"
-	internal_kafka "music-service/internal/handler/kafka"
-	pkg_kafka "music-service/pkg/kafka"
+	"music-service/pkg/kafka"
 	sarama_wrapper "music-service/pkg/kafka/sarama"
 )
 
 type producerHandler struct {
-	cfg          pkg_kafka.Config
+	cfg          kafka.Config
 	syncProducer sarama.SyncProducer
 }
 
-func NewProducerHandler(cfg pkg_kafka.Config) (internal_kafka.ProducerHandler, error) {
+func NewProducerHandler(cfg kafka.Config) (kafka.ProducerHandler, error) {
 	syncProducer, err := sarama_wrapper.NewSyncProducer(cfg)
 	if err != nil {
 		return nil, err
