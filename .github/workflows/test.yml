@@ -31,7 +31,15 @@ jobs:
       run: go vet ./...
 
     - name: Run tests
-      run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+      run: |
+        set -e
+        go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+        
+    - name: Check test results
+      if: failure()
+      run: |
+        echo "❌ Tests failed! This PR cannot be merged until all tests pass."
+        exit 1
 
     - name: Generate coverage report
       run: go tool cover -func=coverage.out
@@ -48,6 +56,13 @@ jobs:
       if: always()
       run: |
         echo "## Test Results" >> $GITHUB_STEP_SUMMARY
-        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-        go test ./... -v 2>&1 | grep -E "(PASS|FAIL|ok|FAIL)" >> $GITHUB_STEP_SUMMARY || true
-        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        if [ -f coverage.out ]; then
+          echo "✅ All tests passed!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Coverage Summary" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          go tool cover -func=coverage.out | tail -n 1 >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ Tests failed!" >> $GITHUB_STEP_SUMMARY
+        fi
