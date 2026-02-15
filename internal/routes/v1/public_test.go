@@ -8,7 +8,9 @@ import (
 	"testing"
 
 	"github.com/gofiber/fiber/v2"
+
 	"music-service/gen/pb"
+	"music-service/internal/models"
 )
 
 // MockProducer is a mock implementation of kafka.Producer for testing
@@ -21,6 +23,29 @@ type MockProducer struct {
 func (m *MockProducer) Produce(ctx context.Context, album *pb.Album) {
 	m.produceCalled = true
 	m.lastAlbum = album
+}
+
+type MockRepository struct {
+}
+
+func (m *MockRepository) Create(album models.Album) error {
+	return nil
+}
+
+func (m *MockRepository) GetById(id int) (*models.Album, error) {
+	return nil, nil
+}
+
+func (m *MockRepository) Get() ([]*models.Album, error) {
+	return nil, nil
+}
+
+func (m *MockRepository) Update(album models.Album) error {
+	return nil
+}
+
+func (m *MockRepository) Upsert(album models.Album) error {
+	return nil
 }
 
 func TestRegisterPublicRoutes(t *testing.T) {
@@ -49,8 +74,8 @@ func TestRegisterPublicRoutes(t *testing.T) {
 			app := fiber.New()
 			router := app.Group("")
 			mockProducer := &MockProducer{}
-
-			RegisterPublicRoutes(router, mockProducer)
+			mockRepostory := &MockRepository{}
+			RegisterPublicRoutes(router, mockProducer, mockRepostory)
 
 			req, err := http.NewRequest(tt.method, tt.path, nil)
 			if err != nil {
@@ -75,8 +100,8 @@ func TestRegisterPublicRoutes_WithRouterGroup(t *testing.T) {
 		app := fiber.New()
 		v1Router := app.Group("/v1")
 		mockProducer := &MockProducer{}
-
-		RegisterPublicRoutes(v1Router, mockProducer)
+		mockRepository := &MockRepository{}
+		RegisterPublicRoutes(v1Router, mockProducer, mockRepository)
 
 		req, err := http.NewRequest("POST", "/v1/album", nil)
 		if err != nil {
@@ -100,8 +125,9 @@ func TestRegisterPublicRoutes_BothMethodsUseSameHandler(t *testing.T) {
 		app := fiber.New()
 		router := app.Group("")
 		mockProducer := &MockProducer{}
+		mockRepository := &MockRepository{}
 
-		RegisterPublicRoutes(router, mockProducer)
+		RegisterPublicRoutes(router, mockProducer, mockRepository)
 
 		// Test POST
 		reqPost, err := http.NewRequest("POST", "/album", nil)
@@ -140,8 +166,9 @@ func TestRegisterPublicRoutes_WithValidPayload(t *testing.T) {
 		app := fiber.New()
 		router := app.Group("")
 		mockProducer := &MockProducer{}
+		mockRepository := &MockRepository{}
 
-		RegisterPublicRoutes(router, mockProducer)
+		RegisterPublicRoutes(router, mockProducer, mockRepository)
 
 		payload := map[string]interface{}{
 			"id":     "1",
@@ -178,8 +205,9 @@ func TestRegisterPublicRoutes_OtherMethodsNotAllowed(t *testing.T) {
 		app := fiber.New()
 		router := app.Group("")
 		mockProducer := &MockProducer{}
+		mockRepository := &MockRepository{}
 
-		RegisterPublicRoutes(router, mockProducer)
+		RegisterPublicRoutes(router, mockProducer, mockRepository)
 
 		methods := []string{"GET", "DELETE", "PATCH"}
 		for _, method := range methods {
@@ -206,7 +234,7 @@ func TestRegisterPublicRoutes_ProducerInjection(t *testing.T) {
 		app := fiber.New()
 		router := app.Group("")
 		mockProducer := &MockProducer{}
-
+		mockRepository := &MockRepository{}
 		// This should not panic if producer is properly injected
 		defer func() {
 			if r := recover(); r != nil {
@@ -214,7 +242,7 @@ func TestRegisterPublicRoutes_ProducerInjection(t *testing.T) {
 			}
 		}()
 
-		RegisterPublicRoutes(router, mockProducer)
+		RegisterPublicRoutes(router, mockProducer, mockRepository)
 
 		// Make a request to verify handler was created successfully
 		req, err := http.NewRequest("POST", "/album", nil)
@@ -235,9 +263,10 @@ func TestRegisterPublicRoutes_MultipleRegistrations(t *testing.T) {
 		v1Router := app.Group("/v1")
 		v2Router := app.Group("/v2")
 		mockProducer := &MockProducer{}
+		mockRepository := &MockRepository{}
 
-		RegisterPublicRoutes(v1Router, mockProducer)
-		RegisterPublicRoutes(v2Router, mockProducer)
+		RegisterPublicRoutes(v1Router, mockProducer, mockRepository)
+		RegisterPublicRoutes(v2Router, mockProducer, mockRepository)
 
 		// Test v1
 		req1, err := http.NewRequest("POST", "/v1/album", nil)

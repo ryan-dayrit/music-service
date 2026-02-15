@@ -8,7 +8,8 @@ import (
 
 type Repository interface {
 	Create(album models.Album) error
-	Read(id int) (*models.Album, error)
+	GetById(id int) (*models.Album, error)
+	Get() ([]*models.Album, error)
 	Update(album models.Album) error
 	Upsert(album models.Album) error
 }
@@ -26,10 +27,16 @@ func (r *repository) Create(album models.Album) error {
 	return err
 }
 
-func (r *repository) Read(id int) (*models.Album, error) {
+func (r *repository) GetById(id int) (*models.Album, error) {
 	album := &models.Album{Id: id}
 	err := r.db.Model(album).WherePK().Select()
 	return album, err
+}
+
+func (r *repository) Get() ([]*models.Album, error) {
+	albums := []*models.Album{}
+	err := r.db.Model(&albums).Select()
+	return albums, err
 }
 
 func (r *repository) Update(album models.Album) error {

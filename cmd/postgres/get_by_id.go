@@ -26,7 +26,7 @@ func NewPostgresGetByIdCommand() *cobra.Command {
 
 			repository := orm.NewRepository(db)
 
-			album, err := repository.Read(1)
+			album, err := repository.GetById(1)
 			if err != nil {
 				log.Fatalf("failed to read albums: %v", err)
 			}

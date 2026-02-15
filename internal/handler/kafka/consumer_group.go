@@ -48,7 +48,7 @@ func (h *consumerGroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession,
 			}
 
 			if h.Repository != nil {
-				_, err := h.Repository.Read(int(protoAlbum.Id))
+				_, err := h.Repository.GetById(int(protoAlbum.Id))
 				if err != nil && err.Error() != "pg: no rows in result set" {
 					log.Fatalf("failed to read album from postgres: %v", err)
 				}

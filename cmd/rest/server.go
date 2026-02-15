@@ -9,8 +9,10 @@ import (
 
 	"music-service/internal/config"
 	"music-service/internal/handler/kafka"
+	"music-service/internal/repository/postgres/orm"
 	"music-service/internal/routes"
 	v1 "music-service/internal/routes/v1"
+	"music-service/pkg/postgres/orm/db"
 	"music-service/pkg/rest"
 )
 
@@ -36,6 +38,10 @@ func NewRestServerCommand() *cobra.Command {
 				log.Panicf("Error creating Kafka producer: %v", err)
 			}
 
+			db := db.NewDB(cfg.Postgres)
+			defer db.Close()
+			repository := orm.NewRepository(db)
+
 			app := fiber.New(fiberCfg)
 
 			app.Get("/", func(c *fiber.Ctx) error {
@@ -47,7 +53,7 @@ func NewRestServerCommand() *cobra.Command {
 
 			v1Router := app.Group("/api/v1")
 			v1.RegisterHealthRoute(v1Router)
-			v1.RegisterPublicRoutes(v1Router, producer)
+			v1.RegisterPublicRoutes(v1Router, producer, repository)
 
 			rest.StartServer(app, cfg.Rest)
 		},
