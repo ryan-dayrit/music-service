@@ -1,13 +1,15 @@
-package kafka
+package sarama
 
 import (
 	"fmt"
 	"strings"
 
 	"github.com/IBM/sarama"
+
+	"music-service/pkg/kafka"
 )
 
-func NewConsumerGroup(cfg Config) (sarama.ConsumerGroup, error) {
+func NewConsumerGroup(cfg kafka.Config) (sarama.ConsumerGroup, error) {
 	saramaCfg := sarama.NewConfig()
 	saramaCfg.Version, _ = sarama.ParseKafkaVersion(sarama.DefaultVersion.String())
 

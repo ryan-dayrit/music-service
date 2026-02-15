@@ -2,11 +2,10 @@ package client
 
 import (
 	"bytes"
-	"log"
-	"net/http"
-
 	"encoding/json"
+	"log"
 	"math/rand/v2"
+	"net/http"
 
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"

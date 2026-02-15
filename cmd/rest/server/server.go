@@ -1,4 +1,4 @@
-package rest
+package server
 
 import (
 	"log"
@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"music-service/internal/config"
-	"music-service/internal/handler/kafka"
+	"music-service/internal/handler/kafka/sarama/producer"
 	"music-service/internal/repository/postgres/orm"
 	"music-service/internal/routes"
 	v1 "music-service/internal/routes/v1"
@@ -33,7 +33,7 @@ func NewRestServerCommand() *cobra.Command {
 				WriteTimeout: time.Duration(cfg.Rest.WriteTimeout) * time.Second,
 			}
 
-			producer, err := kafka.NewProducer(cfg.Kafka)
+			producerHandler, err := producer.NewProducerHandler(cfg.Kafka)
 			if err != nil {
 				log.Panicf("Error creating Kafka producer: %v", err)
 			}
@@ -53,7 +53,7 @@ func NewRestServerCommand() *cobra.Command {
 
 			v1Router := app.Group("/api/v1")
 			v1.RegisterHealthRoute(v1Router)
-			v1.RegisterPublicRoutes(v1Router, producer, repository)
+			v1.RegisterPublicRoutes(v1Router, producerHandler, repository)
 
 			rest.StartServer(app, cfg.Rest)
 		},

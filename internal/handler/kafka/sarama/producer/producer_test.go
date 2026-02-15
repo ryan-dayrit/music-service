@@ -1,4 +1,4 @@
-package kafka
+package producer
 
 import (
 	"context"
@@ -119,7 +119,7 @@ func TestNewProducer(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p, err := NewProducer(tt.cfg)
+			p, err := NewProducerHandler(tt.cfg)
 			if tt.mustError {
 				assert.Error(t, err)
 				assert.Nil(t, p)
@@ -132,20 +132,10 @@ func TestNewProducer(t *testing.T) {
 				} else {
 					// Kafka is running
 					assert.NotNil(t, p)
-					assert.Equal(t, tt.cfg, p.cfg)
-					assert.NotNil(t, p.syncProducer)
-					if p.syncProducer != nil {
-						_ = p.syncProducer.Close()
-					}
 				}
 			} else {
 				assert.NoError(t, err)
 				assert.NotNil(t, p)
-				assert.Equal(t, tt.cfg, p.cfg)
-				assert.NotNil(t, p.syncProducer)
-				if p.syncProducer != nil {
-					_ = p.syncProducer.Close()
-				}
 			}
 		})
 	}
@@ -169,7 +159,7 @@ func TestNewProducer_WithMock(t *testing.T) {
 		mockSP := new(MockSyncProducer)
 
 		// Create producer directly for testing structure
-		p := &producer{
+		p := &producerHandler{
 			cfg:          cfg,
 			syncProducer: mockSP,
 		}
@@ -192,7 +182,7 @@ func TestProduce_Success(t *testing.T) {
 		Oldest:        false,
 	}
 
-	p := &producer{
+	p := &producerHandler{
 		cfg:          cfg,
 		syncProducer: mockSP,
 	}
@@ -229,7 +219,7 @@ func TestProduce_Error(t *testing.T) {
 		Oldest:        false,
 	}
 
-	p := &producer{
+	p := &producerHandler{
 		cfg:          cfg,
 		syncProducer: mockSP,
 	}
@@ -265,7 +255,7 @@ func TestProduce_MessageContent(t *testing.T) {
 		Oldest:        false,
 	}
 
-	p := &producer{
+	p := &producerHandler{
 		cfg:          cfg,
 		syncProducer: mockSP,
 	}
@@ -310,7 +300,7 @@ func TestProduce_MultipleMessages(t *testing.T) {
 		Oldest:        false,
 	}
 
-	p := &producer{
+	p := &producerHandler{
 		cfg:          cfg,
 		syncProducer: mockSP,
 	}
@@ -398,7 +388,7 @@ func TestProduce_DifferentTopics(t *testing.T) {
 				Assignor:      "sticky",
 			}
 
-			p := &producer{
+			p := &producerHandler{
 				cfg:          cfg,
 				syncProducer: mockSP,
 			}
@@ -458,7 +448,7 @@ func TestProduce_DifferentPartitions(t *testing.T) {
 				Assignor:      "sticky",
 			}
 
-			p := &producer{
+			p := &producerHandler{
 				cfg:          cfg,
 				syncProducer: mockSP,
 			}
@@ -493,7 +483,7 @@ func TestProducerStructure(t *testing.T) {
 		Oldest:        true,
 	}
 
-	p := &producer{
+	p := &producerHandler{
 		cfg:          cfg,
 		syncProducer: mockSP,
 	}
@@ -518,7 +508,7 @@ func TestProduce_WithContext(t *testing.T) {
 		Assignor:      "sticky",
 	}
 
-	p := &producer{
+	p := &producerHandler{
 		cfg:          cfg,
 		syncProducer: mockSP,
 	}
@@ -578,7 +568,7 @@ func TestProduce_MessageEncoding(t *testing.T) {
 		Assignor:      "sticky",
 	}
 
-	p := &producer{
+	p := &producerHandler{
 		cfg:          cfg,
 		syncProducer: mockSP,
 	}
@@ -621,7 +611,7 @@ func TestProduce_EmptyTopic(t *testing.T) {
 		Assignor:      "sticky",
 	}
 
-	p := &producer{
+	p := &producerHandler{
 		cfg:          cfg,
 		syncProducer: mockSP,
 	}

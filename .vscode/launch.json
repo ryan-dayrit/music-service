@@ -20,25 +20,25 @@
         },
 
         {
-            "name": "Kafka Consumer",
+            "name": "Kafka Consumer - Sarama",
             "type": "go",
             "request": "launch",
             "mode": "debug",
             "program": "main.go",
-            "args": ["kafka-consumer"]
+            "args": ["kafka-consumer-sarama"]
         },
 
         {
-            "name": "Kafka Producer",
+            "name": "Kafka Producer - Sarama",
             "type": "go",
             "request": "launch",
             "mode": "debug",
             "program": "main.go",
-            "args": ["kafka-producer"]
+            "args": ["kafka-producer-sarama"]
         },
 
         {
-            "name": "Postgres Tool",
+            "name": "Postgres Client - Get All",
             "type": "go",
             "request": "launch",
             "mode": "debug",
@@ -47,7 +47,7 @@
         },
 
         {
-            "name": "Postgres Tool",
+            "name": "Postgres Client - Get By ID",
             "type": "go",
             "request": "launch",
             "mode": "debug",
@@ -56,7 +56,7 @@
         },
 
         {
-            "name": "Postgres Tool",
+            "name": "Postgres Client - Insert",
             "type": "go",
             "request": "launch",
             "mode": "debug",
@@ -65,12 +65,21 @@
         },
 
         {
-            "name": "REST Client",
+            "name": "REST Client - Single",
             "type": "go",
             "request": "launch",
             "mode": "debug",
             "program": "main.go",
-            "args": ["rest-client"]
+            "args": ["rest-client-single"]
+        },
+
+        {
+            "name": "REST Client - Multi",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "main.go",
+            "args": ["rest-client-multi"]
         },
 
         {
