@@ -121,7 +121,7 @@ func TestNewHandler(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			h, err := NewConsumerHandler(tt.cfg)
+			h, err := NewConsumerHandler(tt.cfg, nil)
 			if tt.mustError {
 				assert.Error(t, err)
 				assert.Nil(t, h)

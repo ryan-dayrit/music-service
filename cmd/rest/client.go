@@ -28,13 +28,13 @@ func NewRestClientCommand() *cobra.Command {
 
 			url := "http://" + cfg.Rest.ServerUrl + "/api/v1/album"
 
-			sendRequest("POST", url)
-			sendRequest("PUT", url)
+			sendAlbumRequest("POST", url)
+			sendAlbumRequest("PUT", url)
 		},
 	}
 }
 
-func sendRequest(method string, url string) {
+func sendAlbumRequest(method string, url string) {
 	album := &pb.Album{
 		Id:     rand.Int32(),
 		Title:  uuid.NewString(),

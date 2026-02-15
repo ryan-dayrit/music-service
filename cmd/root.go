@@ -23,10 +23,12 @@ func init() {
 	rootCmd.AddCommand(grpc.NewGrpcClientCommand())
 	rootCmd.AddCommand(grpc.NewGrpcServerCommand())
 
-	rootCmd.AddCommand(kafka.NewConsumerCommand())
-	rootCmd.AddCommand(kafka.NewProducerCommand())
+	rootCmd.AddCommand(kafka.NewKafkaConsumerCommand())
+	rootCmd.AddCommand(kafka.NewKafkaProducerCommand())
 
-	rootCmd.AddCommand(postgres.NewToolCommand())
+	rootCmd.AddCommand(postgres.NewPostgresGetAllCommand())
+	rootCmd.AddCommand(postgres.NewPostgresGetByIdCommand())
+	rootCmd.AddCommand(postgres.NewPostgresInsertCommand())
 
 	rootCmd.AddCommand(rest.NewRestClientCommand())
 	rootCmd.AddCommand(rest.NewRestServerCommand())

@@ -1,4 +1,4 @@
-package db
+package postgres
 
 type Config struct {
 	DriverName string `yaml:"driver_name"`

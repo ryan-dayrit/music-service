@@ -12,8 +12,8 @@ import (
 	"music-service/gen/pb"
 	"music-service/internal/config"
 	handler "music-service/internal/handler/grpc"
-	"music-service/internal/repository/postgres"
-	"music-service/pkg/postgres/db"
+	"music-service/internal/repository/postgres/sqlx"
+	"music-service/pkg/postgres/sqlx/db"
 )
 
 func NewGrpcServerCommand() *cobra.Command {
@@ -37,14 +37,14 @@ func NewGrpcServerCommand() *cobra.Command {
 			s := grpc.NewServer()
 			reflection.Register(s)
 
-			db, err := db.NewPostgresDB(cfg.Postgres)
+			db, err := db.NewDB(cfg.Postgres)
 			if err != nil {
 				log.Fatalf("failed to get db: %v", err)
 				return
 			}
 			defer db.Close()
 
-			repository := postgres.NewRepository(db)
+			repository := sqlx.NewRepository(db)
 			handler := handler.NewAlbumHandler(repository)
 
 			pb.RegisterMusicServiceServer(s, handler)

@@ -14,7 +14,7 @@ import (
 	"music-service/internal/handler/kafka"
 )
 
-func NewProducerCommand() *cobra.Command {
+func NewKafkaProducerCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "kafka-producer",
 		Short: "starts the kafka producer",

@@ -5,9 +5,11 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+
+	"music-service/pkg/postgres"
 )
 
-func NewPostgresDB(cfg Config) (*sqlx.DB, error) {
+func NewDB(cfg postgres.Config) (*sqlx.DB, error) {
 	dataSourceNameTemplate := "user=%s dbname=%s sslmode=%s password=%s host=%s"
 	dataSourceName :=
 		fmt.Sprintf(

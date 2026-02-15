@@ -1,4 +1,4 @@
-package postgres
+package sqlx
 
 import (
 	_ "embed"
