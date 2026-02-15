@@ -1,17 +1,17 @@
 package v1
 
 import (
+	"github.com/gofiber/fiber/v2"
+
 	"music-service/gen/pb"
 	"music-service/internal/handler/kafka"
-
-	"github.com/gofiber/fiber/v2"
 )
 
 type albumHandler struct {
-	producer kafka.Producer
+	producer kafka.ProducerHandler
 }
 
-func NewAlbumHandler(producer kafka.Producer) *albumHandler {
+func NewAlbumHandler(producer kafka.ProducerHandler) *albumHandler {
 	return &albumHandler{
 		producer: producer,
 	}

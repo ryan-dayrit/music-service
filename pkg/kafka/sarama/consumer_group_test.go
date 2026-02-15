@@ -1,14 +1,16 @@
-package kafka
+package sarama
 
 import (
 	"testing"
 
 	"github.com/IBM/sarama"
 	"github.com/stretchr/testify/assert"
+
+	"music-service/pkg/kafka"
 )
 
 func TestNewConsumerGroup_StickyAssignor(t *testing.T) {
-	cfg := Config{
+	cfg := kafka.Config{
 		Brokers:       "localhost:9092",
 		Topics:        "test-topic",
 		ConsumerGroup: "test-group",
@@ -31,7 +33,7 @@ func TestNewConsumerGroup_StickyAssignor(t *testing.T) {
 }
 
 func TestNewConsumerGroup_RoundRobinAssignor(t *testing.T) {
-	cfg := Config{
+	cfg := kafka.Config{
 		Brokers:       "localhost:9092",
 		Topics:        "test-topic",
 		ConsumerGroup: "test-group",
@@ -53,7 +55,7 @@ func TestNewConsumerGroup_RoundRobinAssignor(t *testing.T) {
 }
 
 func TestNewConsumerGroup_RangeAssignor(t *testing.T) {
-	cfg := Config{
+	cfg := kafka.Config{
 		Brokers:       "localhost:9092",
 		Topics:        "test-topic",
 		ConsumerGroup: "test-group",
@@ -75,7 +77,7 @@ func TestNewConsumerGroup_RangeAssignor(t *testing.T) {
 }
 
 func TestNewConsumerGroup_InvalidAssignor(t *testing.T) {
-	cfg := Config{
+	cfg := kafka.Config{
 		Brokers:       "localhost:9092",
 		Topics:        "test-topic",
 		ConsumerGroup: "test-group",
@@ -91,7 +93,7 @@ func TestNewConsumerGroup_InvalidAssignor(t *testing.T) {
 }
 
 func TestNewConsumerGroup_OldestOffset(t *testing.T) {
-	cfg := Config{
+	cfg := kafka.Config{
 		Brokers:       "localhost:9092",
 		Topics:        "test-topic",
 		ConsumerGroup: "test-group",
@@ -113,7 +115,7 @@ func TestNewConsumerGroup_OldestOffset(t *testing.T) {
 }
 
 func TestNewConsumerGroup_MultipleBrokers(t *testing.T) {
-	cfg := Config{
+	cfg := kafka.Config{
 		Brokers:       "localhost:9092,localhost:9093,localhost:9094",
 		Topics:        "test-topic",
 		ConsumerGroup: "test-group",
@@ -135,7 +137,7 @@ func TestNewConsumerGroup_MultipleBrokers(t *testing.T) {
 }
 
 func TestNewConsumerGroup_EmptyBrokers(t *testing.T) {
-	cfg := Config{
+	cfg := kafka.Config{
 		Brokers:       "",
 		Topics:        "test-topic",
 		ConsumerGroup: "test-group",
@@ -191,7 +193,7 @@ func TestNewConsumerGroup_AllAssignors(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cfg := Config{
+			cfg := kafka.Config{
 				Brokers:       "localhost:9092",
 				Topics:        "test-topic",
 				ConsumerGroup: "test-group",
@@ -242,7 +244,7 @@ func TestNewConsumerGroup_OffsetConfiguration(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cfg := Config{
+			cfg := kafka.Config{
 				Brokers:       "localhost:9092",
 				Topics:        "test-topic",
 				ConsumerGroup: "test-group",
@@ -267,7 +269,7 @@ func TestNewConsumerGroup_OffsetConfiguration(t *testing.T) {
 }
 
 func TestNewConsumerGroup_ConfigValidation(t *testing.T) {
-	cfg := Config{
+	cfg := kafka.Config{
 		Brokers:       "localhost:9092",
 		Topics:        "test-topic",
 		ConsumerGroup: "test-group",

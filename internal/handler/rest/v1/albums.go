@@ -9,11 +9,11 @@ import (
 )
 
 type albumsHandler struct {
-	producer   kafka.Producer
+	producer   kafka.ProducerHandler
 	repository orm.Repository
 }
 
-func NewAlbumsHandler(producer kafka.Producer, repository orm.Repository) *albumsHandler {
+func NewAlbumsHandler(producer kafka.ProducerHandler, repository orm.Repository) *albumsHandler {
 	return &albumsHandler{
 		producer:   producer,
 		repository: repository,

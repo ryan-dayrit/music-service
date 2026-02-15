@@ -1,13 +1,15 @@
-package kafka
+package sarama
 
 import (
 	"fmt"
 	"strings"
 
+	"music-service/pkg/kafka"
+
 	"github.com/IBM/sarama"
 )
 
-func NewSyncProducer(cfg Config) (sarama.SyncProducer, error) {
+func NewSyncProducer(cfg kafka.Config) (sarama.SyncProducer, error) {
 	saramaCfg := sarama.NewConfig()
 	saramaCfg.Version, _ = sarama.ParseKafkaVersion(sarama.DefaultVersion.String())
 	saramaCfg.Producer.RequiredAcks = sarama.WaitForAll

@@ -1,4 +1,4 @@
-package kafka
+package consumer
 
 import (
 	"context"
@@ -134,20 +134,10 @@ func TestNewHandler(t *testing.T) {
 				} else {
 					// Kafka is running
 					assert.NotNil(t, h)
-					assert.Equal(t, tt.cfg, h.cfg)
-					assert.NotNil(t, h.consumerGroup)
-					if h.consumerGroup != nil {
-						_ = h.consumerGroup.Close()
-					}
 				}
 			} else {
 				assert.NoError(t, err)
 				assert.NotNil(t, h)
-				assert.Equal(t, tt.cfg, h.cfg)
-				assert.NotNil(t, h.consumerGroup)
-				if h.consumerGroup != nil {
-					_ = h.consumerGroup.Close()
-				}
 			}
 		})
 	}

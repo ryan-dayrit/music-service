@@ -6,10 +6,10 @@ import (
 	"github.com/spf13/cobra"
 
 	"music-service/cmd/grpc"
-	"music-service/cmd/kafka"
+	"music-service/cmd/kafka/sarama"
 	"music-service/cmd/postgres"
-	"music-service/cmd/rest"
 	rest_client "music-service/cmd/rest/client"
+	rest_server "music-service/cmd/rest/server"
 )
 
 var rootCmd = &cobra.Command{}
@@ -24,8 +24,8 @@ func init() {
 	rootCmd.AddCommand(grpc.NewGrpcClientCommand())
 	rootCmd.AddCommand(grpc.NewGrpcServerCommand())
 
-	rootCmd.AddCommand(kafka.NewKafkaConsumerCommand())
-	rootCmd.AddCommand(kafka.NewKafkaProducerCommand())
+	rootCmd.AddCommand(sarama.NewKafkaConsumerCommand())
+	rootCmd.AddCommand(sarama.NewKafkaProducerCommand())
 
 	rootCmd.AddCommand(postgres.NewPostgresGetAllCommand())
 	rootCmd.AddCommand(postgres.NewPostgresGetByIdCommand())
@@ -33,5 +33,5 @@ func init() {
 
 	rootCmd.AddCommand(rest_client.NewRestClientSingleCommand())
 	rootCmd.AddCommand(rest_client.NewRestClientMultiCommand())
-	rootCmd.AddCommand(rest.NewRestServerCommand())
+	rootCmd.AddCommand(rest_server.NewRestServerCommand())
 }

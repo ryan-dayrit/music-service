@@ -1,14 +1,16 @@
-package kafka
+package sarama
 
 import (
 	"testing"
+
+	"music-service/pkg/kafka"
 
 	"github.com/IBM/sarama"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewSyncProducer_Success(t *testing.T) {
-	cfg := Config{
+	cfg := kafka.Config{
 		Brokers:       "localhost:9092",
 		Topics:        "test-topic",
 		ConsumerGroup: "test-group",
@@ -31,7 +33,7 @@ func TestNewSyncProducer_Success(t *testing.T) {
 }
 
 func TestNewSyncProducer_MultipleBrokers(t *testing.T) {
-	cfg := Config{
+	cfg := kafka.Config{
 		Brokers:       "localhost:9092,localhost:9093,localhost:9094",
 		Topics:        "test-topic",
 		ConsumerGroup: "test-group",
@@ -53,7 +55,7 @@ func TestNewSyncProducer_MultipleBrokers(t *testing.T) {
 }
 
 func TestNewSyncProducer_EmptyBrokers(t *testing.T) {
-	cfg := Config{
+	cfg := kafka.Config{
 		Brokers:       "",
 		Topics:        "test-topic",
 		ConsumerGroup: "test-group",
@@ -75,7 +77,7 @@ func TestNewSyncProducer_EmptyBrokers(t *testing.T) {
 }
 
 func TestNewSyncProducer_SingleBroker(t *testing.T) {
-	cfg := Config{
+	cfg := kafka.Config{
 		Brokers: "kafka.example.com:9092",
 	}
 
@@ -93,7 +95,7 @@ func TestNewSyncProducer_SingleBroker(t *testing.T) {
 }
 
 func TestNewSyncProducer_ConfigValidation(t *testing.T) {
-	cfg := Config{
+	cfg := kafka.Config{
 		Brokers: "localhost:9092",
 		Topics:  "test-topic",
 	}
@@ -151,7 +153,7 @@ func TestNewSyncProducer_VariousBrokerFormats(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cfg := Config{
+			cfg := kafka.Config{
 				Brokers: tt.brokers,
 			}
 
@@ -178,7 +180,7 @@ func TestNewSyncProducer_VariousBrokerFormats(t *testing.T) {
 }
 
 func TestNewSyncProducer_ConfigDefaults(t *testing.T) {
-	cfg := Config{
+	cfg := kafka.Config{
 		Brokers: "localhost:9092",
 	}
 
@@ -200,7 +202,7 @@ func TestNewSyncProducer_ConfigDefaults(t *testing.T) {
 }
 
 func TestNewSyncProducer_AllFields(t *testing.T) {
-	cfg := Config{
+	cfg := kafka.Config{
 		Brokers:       "localhost:9092,localhost:9093",
 		Topics:        "topic1,topic2",
 		ConsumerGroup: "my-group",
