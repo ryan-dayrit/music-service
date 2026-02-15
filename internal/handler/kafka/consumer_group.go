@@ -44,30 +44,37 @@ func (h *consumerGroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession,
 			}
 			protoAlbum := &pb.Album{}
 			if err := proto.Unmarshal(message.Value, protoAlbum); err != nil {
-				log.Fatalf("Failed to unmarshall to album: %v", err)
+				log.Fatalf("failed to unmarshal to album: %v", err)
 			}
 
 			if h.Repository != nil {
-				existingAlbum, err := h.Repository.Read(int(protoAlbum.Id))
+				_, err := h.Repository.Read(int(protoAlbum.Id))
 				if err != nil && err.Error() != "pg: no rows in result set" {
-					log.Fatalf("Failed to read album from postgres: %v", err)
+					log.Fatalf("failed to read album from postgres: %v", err)
 				}
 
-				if existingAlbum == nil {
-					newAlbum := models.Album{
-						Id:     int(protoAlbum.Id),
-						Title:  protoAlbum.Title,
-						Artist: protoAlbum.Artist,
-						Price:  decimal.NewFromFloat(rand.Float64()),
-					}
-					err = h.Repository.Create(newAlbum)
+				album := models.Album{
+					Id:     int(protoAlbum.Id),
+					Title:  protoAlbum.Title,
+					Artist: protoAlbum.Artist,
+					Price:  decimal.NewFromFloat(rand.Float64()),
+				}
+				if err != nil && err.Error() == "pg: no rows in result set" {
+					err = h.Repository.Create(album)
 					if err != nil {
-						log.Fatalf("Failed to create album in postgres: %v", err)
+						log.Fatalf("failed to create album in postgres: %v", err)
 					}
+					log.Printf("created album in postgres: %s", album.String())
+				} else {
+					err = h.Repository.Update(album)
+					if err != nil {
+						log.Fatalf("failed to update album in postgres: %v", err)
+					}
+					log.Printf("updated album in postgres: %s", album.String())
 				}
 			}
 
-			log.Printf("Message claimed: value = %s (Id=%d, Title=%s, Artist=%s, Price=%.2f), timestamp = %v, topic = %s", string(message.Value), protoAlbum.Id, protoAlbum.Title, protoAlbum.Artist, protoAlbum.Price, message.Timestamp, message.Topic)
+			log.Printf("message claimed: Id=%d, Title=%s, Artist=%s, Price=%f, timestamp = %v, topic = %s", protoAlbum.Id, protoAlbum.Title, protoAlbum.Artist, protoAlbum.Price, message.Timestamp, message.Topic)
 			session.MarkMessage(message, "")
 		case <-session.Context().Done():
 			return nil
