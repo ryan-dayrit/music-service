@@ -5,5 +5,5 @@ import (
 )
 
 type ConsumerHandler interface {
-	Consume(ctx context.Context)
+	Consume(ctx context.Context) error
 }

@@ -8,11 +8,12 @@ Components
 3. gRPC API (internal)
 4. REST API (external) using fiber library
 5. Kafka consumer using IBM/sarama library
+6. Kafka consumer using confluent library
    
 Writes 
 1. REST API POST/PUT receiver for json payloads
 2. REST API publishes proto to Kafka
-3. Kafka consumer consumes the proto from kafka and creates/updates PostgreSQL
+3. Kafka consumers consume the proto from the kafka topic and creates/updates PostgreSQL
 
 Reads 
 1. gRPC API which reads from the PostgreSQL database using Sqlx library and returns protos in json format

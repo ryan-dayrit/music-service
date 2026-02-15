@@ -1,9 +1,9 @@
 package v1
 
 import (
-	"music-service/internal/handler/kafka"
 	v1 "music-service/internal/handler/rest/v1"
 	"music-service/internal/repository/postgres/orm"
+	"music-service/pkg/kafka"
 
 	"github.com/gofiber/fiber/v2"
 )

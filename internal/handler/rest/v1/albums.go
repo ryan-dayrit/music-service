@@ -4,19 +4,20 @@ import (
 	"github.com/gofiber/fiber/v2"
 
 	"music-service/gen/pb"
-	"music-service/internal/handler/kafka"
+
 	"music-service/internal/repository/postgres/orm"
+	"music-service/pkg/kafka"
 )
 
 type albumsHandler struct {
-	producer   kafka.ProducerHandler
-	repository orm.Repository
+	producerHandler kafka.ProducerHandler
+	repository      orm.Repository
 }
 
-func NewAlbumsHandler(producer kafka.ProducerHandler, repository orm.Repository) *albumsHandler {
+func NewAlbumsHandler(producerHandler kafka.ProducerHandler, repository orm.Repository) *albumsHandler {
 	return &albumsHandler{
-		producer:   producer,
-		repository: repository,
+		producerHandler: producerHandler,
+		repository:      repository,
 	}
 }
 
@@ -28,7 +29,7 @@ func (h *albumsHandler) CreateAlbums(ctx *fiber.Ctx) error {
 		})
 	}
 	for _, newAlbum := range newAlbums {
-		h.producer.Produce(ctx.Context(), newAlbum)
+		h.producerHandler.Produce(ctx.Context(), newAlbum)
 	}
 	return ctx.Status(fiber.StatusCreated).JSON(newAlbums)
 }

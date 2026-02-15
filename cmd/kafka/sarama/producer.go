@@ -28,7 +28,7 @@ func NewKafkaProducerCommand() *cobra.Command {
 
 			producerHandler, err := producer.NewProducerHandler(cfg.Kafka)
 			if err != nil {
-				log.Panicf("error creating Kafka producer: %v", err)
+				log.Panicf("error creating producer handler: %v", err)
 			}
 
 			album := &pb.Album{

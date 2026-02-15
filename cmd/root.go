@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"music-service/cmd/grpc"
+	"music-service/cmd/kafka/confluent"
 	"music-service/cmd/kafka/sarama"
 	"music-service/cmd/postgres"
 	rest_client "music-service/cmd/rest/client"
@@ -23,6 +24,8 @@ func Execute() {
 func init() {
 	rootCmd.AddCommand(grpc.NewGrpcClientCommand())
 	rootCmd.AddCommand(grpc.NewGrpcServerCommand())
+
+	rootCmd.AddCommand(confluent.NewKafkaConsumerCommand())
 
 	rootCmd.AddCommand(sarama.NewKafkaConsumerCommand())
 	rootCmd.AddCommand(sarama.NewKafkaProducerCommand())
