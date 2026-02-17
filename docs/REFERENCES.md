@@ -1,3 +1,11 @@
+# svelte
+  * https://www.google.com/search?q=how+to+fetch+from+a+rest+api+on+button+click+in+svelte
+  * https://www.reddit.com/r/sveltejs/comments/15iw59w/how_to_debug_svelte_apps/
+  * https://www.google.com/search?q=show+json+data+in+table+in+svelte
+   
+# cors middleware in fiber 
+  * https://www.google.com/search?q=cors+middleware+in+fiber
+
 # confluent go library 
   * https://github.com/confluentinc/confluent-kafka-go/tree/v1.9.2/kafka
   * https://codemia.io/knowledge-hub/path/building_go_application_using_confluent-kafka-go_on_linux

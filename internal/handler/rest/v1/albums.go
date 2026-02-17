@@ -21,6 +21,11 @@ func NewAlbumsHandler(producerHandler kafka.ProducerHandler, repository orm.Repo
 	}
 }
 
+// @Summary Creates albums
+// @ID create-albums
+// @Produce json
+// @Success 201 {array} pb.Album
+// @Router /albums [post] [put]
 func (h *albumsHandler) CreateAlbums(ctx *fiber.Ctx) error {
 	newAlbums := []*pb.Album{}
 	if err := ctx.BodyParser(&newAlbums); err != nil {
@@ -34,6 +39,11 @@ func (h *albumsHandler) CreateAlbums(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusCreated).JSON(newAlbums)
 }
 
+// @Summary Gets all albums
+// @ID get-albums
+// @Produce json
+// @Success 200 {array} pb.Album
+// @Router /albums [get]
 func (h *albumsHandler) GetAlbums(ctx *fiber.Ctx) error {
 	albums, err := h.repository.Get()
 	if err != nil {

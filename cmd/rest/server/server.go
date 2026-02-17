@@ -17,6 +17,12 @@ import (
 	"music-service/pkg/rest"
 )
 
+// @title Go + Fiber API
+// @version 1.0
+// @description This is a sample server.
+// @host localhost:3000
+// @BasePath /
+// @schemes http
 func NewRestServerCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "rest-server",

@@ -1,0 +1,54 @@
+definitions:
+  pb.Album:
+    properties:
+      artist:
+        type: string
+      id:
+        type: integer
+      price:
+        type: number
+      title:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /album:
+    post:
+      operationId: create-album
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/pb.Album'
+            type: array
+      summary: Creates an album
+  /albums:
+    get:
+      operationId: get-albums
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/pb.Album'
+            type: array
+      summary: Gets all albums
+    post:
+      operationId: create-albums
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/pb.Album'
+            type: array
+      summary: Creates albums
+swagger: "2.0"
