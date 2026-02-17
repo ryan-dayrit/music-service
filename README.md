@@ -1,5 +1,12 @@
 # music-service
-practice Golang application for gRPC, REST, Kafka, PostgreSQL, Protobuf
+practice Golang backend application using
+  * gRPC
+  * REST
+  * Kafka
+  * PostgreSQL
+  * Protobuf
+
+the UI is written in Svelte 
 
 # Processing Flow 
 Components 
@@ -9,6 +16,7 @@ Components
 4. REST API (external) using fiber library to receive JSON payloads and produce a Protobuf message to a kakfa topic
 5. Kafka consumer using sarama library to process Protobuf messages from a Kafka topic
 6. Kafka consumer using confluent library to process Protobuf messages from a Kafka topic
+7. UI using svelte which calls the REST API and shows the results 
    
 Writes 
 1. REST API POST/PUT receiver for json payloads
@@ -16,9 +24,10 @@ Writes
 3. Kafka consumers consume the proto from the kafka topic and creates/updates PostgreSQL
 
 Reads 
-1. gRPC API which reads from the PostgreSQL database using Sqlx library and returns protos in json format
-2. REST API which reads from the PostgreSQL database using ORM library and returns protos in json format
-   
+1. gRPC API (internal) which reads from the PostgreSQL database using Sqlx library and returns protos in json format
+2. REST API (exteranl) which reads from the PostgreSQL database using ORM library and returns protos in json format
+3. Svelte UI (external) which calls the REST API (external)
+
 # CLI Testers
 1. REST API client which sends POST/PUT requests
 2. gRPC API client which calls gRPC API and prints response
