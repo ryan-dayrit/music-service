@@ -3,8 +3,10 @@ CREATE SCHEMA IF NOT EXISTS music;
 
 CREATE TABLE IF NOT EXISTS music.albums (
     id integer GENERATED ALWAYS AS IDENTITY,
-    title text NOT NULL,
-    artist text NOT NULL,
+    title text COLLATE pg_catalog."default" NOT NULL,
+    artist text COLLATE pg_catalog."default" NOT NULL,
     price numeric(10,2) NOT NULL DEFAULT 0.00,
     CONSTRAINT albums_pkey PRIMARY KEY (id)
-);
+) TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS music.albums OWNER TO postgres;
