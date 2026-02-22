@@ -26,6 +26,62 @@ func TestNewProducerHandler_InvalidBrokers(t *testing.T) {
 	}
 }
 
+func TestNewProducerHandler_EmptyTopics(t *testing.T) {
+	cfg := kafka.Config{
+		Brokers: "localhost:9092",
+		Topics:  "",
+	}
+
+	handler, err := NewProducerHandler(cfg)
+
+	if err == nil {
+		t.Error("NewProducerHandler() expected error for empty topics, got nil")
+	}
+	if handler != nil {
+		t.Error("NewProducerHandler() should return nil handler on error")
+	}
+}
+
+func TestNewProducerHandler_WhitespaceOnlyTopics(t *testing.T) {
+	cfg := kafka.Config{
+		Brokers: "localhost:9092",
+		Topics:  "   ",
+	}
+
+	handler, err := NewProducerHandler(cfg)
+
+	if err == nil {
+		t.Error("NewProducerHandler() expected error for whitespace-only topics, got nil")
+	}
+	if handler != nil {
+		t.Error("NewProducerHandler() should return nil handler on error")
+	}
+}
+
+func TestNewProducerHandler_TopicWithLeadingTrailingSpaces(t *testing.T) {
+	cfg := kafka.Config{
+		Brokers: "localhost:9092",
+		Topics:  "  test-topic  , other-topic",
+	}
+
+	handler, err := NewProducerHandler(cfg)
+
+	if err != nil {
+		t.Errorf("NewProducerHandler() unexpected error = %v", err)
+	}
+	if handler == nil {
+		t.Error("NewProducerHandler() should return non-nil handler")
+	}
+
+	ph, ok := handler.(*producerHandler)
+	if !ok {
+		t.Fatal("handler is not *producerHandler")
+	}
+	if ph.topic != "test-topic" {
+		t.Errorf("expected trimmed topic 'test-topic', got '%s'", ph.topic)
+	}
+}
+
 func TestProducerHandler_Struct(t *testing.T) {
 	ph := &producerHandler{
 		cfg: kafka.Config{

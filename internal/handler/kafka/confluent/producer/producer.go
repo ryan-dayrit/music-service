@@ -2,6 +2,7 @@ package producer
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"strings"
 
@@ -27,7 +28,12 @@ func NewProducerHandler(cfg kafka.Config) (kafka.ProducerHandler, error) {
 	}
 
 	// Use primary topic for produce (first topic if comma-separated)
-	topic, _, _ := strings.Cut(cfg.Topics, ",")
+	rawTopic, _, _ := strings.Cut(cfg.Topics, ",")
+	topic := strings.TrimSpace(rawTopic)
+	if topic == "" {
+		confluentProducer.Close()
+		return nil, fmt.Errorf("no topics configured")
+	}
 
 	p := &producerHandler{
 		cfg:               cfg,
