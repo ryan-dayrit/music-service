@@ -1,11 +1,12 @@
-# Dev stack: Postgres, Kafka, Kafka UI
-# Config: postgres (host: localhost, port: 5432, user: postgres, password: postgres, db: practice)
-#         kafka (localhost:9092), kafka-ui (http://localhost:8080)
+# Dev stack (LOCAL DEVELOPMENT ONLY): Postgres, Kafka, Kafka UI
+# Postgres config (dev only): host=localhost, port=5432, user=postgres, password=postgres, db=practice
+# WARNING: These credentials are for local development only and MUST NOT be used in production.
 services:
   postgres:
     image: postgres:16-alpine
     ports:
       - "5432:5432"
+    # Dev-only credentials: do not reuse POSTGRES_USER/POSTGRES_PASSWORD values in any production environment.
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
