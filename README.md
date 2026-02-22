@@ -9,7 +9,17 @@ practice Golang backend application using
 the UI is written in Svelte 
 
 the UI acceptance tests are written in Cypress
- 
+
+# Integration Tests
+Backend integration tests use [testcontainers-go](https://golang.testcontainers.org/) to spin up a PostgreSQL container. They are excluded from normal test runs via the `integration` build tag.
+
+Run integration tests (requires Docker):
+```bash
+go test -tags=integration ./tests/integration/...
+```
+
+Tests cover REST API, gRPC server, and ORM repository.
+
 # Components 
 1. PostgreSQL database in minikube with DDL/DML initialization scripts
 2. Kafka in docker with a topic and a consumer group

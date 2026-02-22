@@ -1,4 +1,4 @@
-name: Go Unit Tests
+name: Go Tests
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  test:
-    name: Run Unit Tests
+  unit-test:
+    name: Unit Tests
     runs-on: ubuntu-latest
     
     steps:
@@ -30,7 +30,7 @@ jobs:
     - name: Run go vet
       run: go vet ./...
 
-    - name: Run tests
+    - name: Run unit tests
       run: |
         set -e
         go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
@@ -57,12 +57,32 @@ jobs:
       run: |
         echo "## Test Results" >> $GITHUB_STEP_SUMMARY
         if [ -f coverage.out ]; then
-          echo "✅ All tests passed!" >> $GITHUB_STEP_SUMMARY
+          echo "✅ All unit tests passed!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Coverage Summary" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           go tool cover -func=coverage.out | tail -n 1 >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         else
-          echo "❌ Tests failed!" >> $GITHUB_STEP_SUMMARY
+          echo "❌ Unit tests failed!" >> $GITHUB_STEP_SUMMARY
         fi
+
+  integration-test:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.25.5'
+        cache: true
+
+    - name: Download dependencies
+      run: go mod download
+
+    - name: Run integration tests
+      run: go test -tags=integration -v -count=1 ./tests/integration/...
