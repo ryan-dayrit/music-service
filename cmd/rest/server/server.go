@@ -44,6 +44,7 @@ func NewRestServerCommand() *cobra.Command {
 			if err != nil {
 				log.Panicf("Error creating Kafka producer: %v", err)
 			}
+			defer producerHandler.Close()
 
 			db := db.NewDB(cfg.Postgres)
 			defer db.Close()
