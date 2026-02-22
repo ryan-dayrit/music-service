@@ -2,7 +2,9 @@ package producer
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"strings"
 
 	ext_kafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"google.golang.org/protobuf/proto"
@@ -13,6 +15,7 @@ import (
 
 type producerHandler struct {
 	cfg               kafka.Config
+	topic             string
 	confluentProducer *ext_kafka.Producer
 }
 
@@ -24,11 +27,51 @@ func NewProducerHandler(cfg kafka.Config) (kafka.ProducerHandler, error) {
 		return nil, err
 	}
 
-	return &producerHandler{cfg: cfg, confluentProducer: confluentProducer}, nil
+	// Use primary topic for produce (first topic if comma-separated)
+	rawTopic, _, _ := strings.Cut(cfg.Topics, ",")
+	topic := strings.TrimSpace(rawTopic)
+	if topic == "" {
+		confluentProducer.Close()
+		return nil, fmt.Errorf("no topics configured")
+	}
+
+	p := &producerHandler{
+		cfg:               cfg,
+		topic:             topic,
+		confluentProducer: confluentProducer,
+	}
+
+	go p.runDeliveryReports()
+
+	return p, nil
+}
+
+func (p *producerHandler) runDeliveryReports() {
+	for e := range p.confluentProducer.Events() {
+		msg, ok := e.(*ext_kafka.Message)
+		if !ok {
+			continue
+		}
+		if msg.TopicPartition.Error != nil {
+			log.Printf("failed to deliver message: %v", msg.TopicPartition.Error)
+		}
+	}
+}
+
+func (p *producerHandler) Close() {
+	if remaining := p.confluentProducer.Flush(5000); remaining > 0 {
+		log.Printf("producer flushed with %d message(s) remaining undelivered", remaining)
+	}
+	p.confluentProducer.Close()
 }
 
 func (p *producerHandler) Produce(ctx context.Context, album *pb.Album) {
-	deliveryChan := make(chan ext_kafka.Event)
+	select {
+	case <-ctx.Done():
+		log.Printf("produce cancelled: %v", ctx.Err())
+		return
+	default:
+	}
 
 	marshaledAlbum, err := proto.Marshal(album)
 	if err != nil {
@@ -36,23 +79,10 @@ func (p *producerHandler) Produce(ctx context.Context, album *pb.Album) {
 	}
 
 	err = p.confluentProducer.Produce(&ext_kafka.Message{
-		TopicPartition: ext_kafka.TopicPartition{Topic: &p.cfg.Topics, Partition: ext_kafka.PartitionAny},
+		TopicPartition: ext_kafka.TopicPartition{Topic: &p.topic, Partition: ext_kafka.PartitionAny},
 		Value:          marshaledAlbum,
-		Headers:        []ext_kafka.Header{{Key: "myTestHeader", Value: []byte("header values are binary")}},
-	}, deliveryChan)
+	}, nil)
 	if err != nil {
 		log.Panicf("failed to produce album: %v", err)
 	}
-
-	event := <-deliveryChan
-	message := event.(*ext_kafka.Message)
-
-	if message.TopicPartition.Error != nil {
-		log.Printf("failed to deliver message: %v\n", message.TopicPartition.Error)
-	} else {
-		log.Printf("delivered message to topic %s [%d] at offset %v\n",
-			*message.TopicPartition.Topic, message.TopicPartition.Partition, message.TopicPartition.Offset)
-	}
-
-	close(deliveryChan)
 }

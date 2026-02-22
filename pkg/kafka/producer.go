@@ -8,4 +8,5 @@ import (
 
 type ProducerHandler interface {
 	Produce(ctx context.Context, album *pb.Album)
+	Close()
 }

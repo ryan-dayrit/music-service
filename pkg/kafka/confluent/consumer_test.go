@@ -22,10 +22,11 @@ func (m *MockMessageValueProcessor) Process(msg []byte) {
 // TestNewConsumer tests the constructor
 func TestNewConsumer(t *testing.T) {
 	tests := []struct {
-		name            string
-		consumer        *kafka.Consumer
-		processor       message.MessageValueProcessor
-		parallelWorkers int
+		name             string
+		consumer         *kafka.Consumer
+		processor        message.MessageValueProcessor
+		parallelWorkers  int
+		expectedWorkers  int // 0 means expect parallelWorkers
 	}{
 		{
 			name:            "with nil consumer",
@@ -38,6 +39,7 @@ func TestNewConsumer(t *testing.T) {
 			consumer:        nil,
 			processor:       &MockMessageValueProcessor{},
 			parallelWorkers: 0,
+			expectedWorkers: 1, // clamped to min
 		},
 		{
 			name:            "with single worker",
@@ -56,6 +58,7 @@ func TestNewConsumer(t *testing.T) {
 			consumer:        nil,
 			processor:       &MockMessageValueProcessor{},
 			parallelWorkers: -1,
+			expectedWorkers: 1, // clamped to min
 		},
 	}
 
@@ -75,8 +78,12 @@ func TestNewConsumer(t *testing.T) {
 				t.Error("MessageValueProcessor field not set correctly")
 			}
 
-			if c.parallelWorkers != tt.parallelWorkers {
-				t.Errorf("Expected parallelWorkers=%d, got %d", tt.parallelWorkers, c.parallelWorkers)
+			expected := tt.expectedWorkers
+			if expected == 0 {
+				expected = tt.parallelWorkers
+			}
+			if c.parallelWorkers != expected {
+				t.Errorf("Expected parallelWorkers=%d, got %d", expected, c.parallelWorkers)
 			}
 		})
 	}

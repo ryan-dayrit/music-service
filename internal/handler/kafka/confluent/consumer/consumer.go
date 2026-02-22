@@ -1,6 +1,7 @@
 package consumer
 
 import (
+	"fmt"
 	"strings"
 
 	ext_kafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
@@ -11,12 +12,10 @@ import (
 	"music-service/pkg/kafka/confluent"
 )
 
-type consumerHandler struct {
-	consumer kafka.ConsumerHandler
-}
+const defaultParallelWorkers = 5
 
-func NewConsumerHandler(cfg kafka.Config, repository orm.Repository) (kafka.ConsumerHandler, error) {
-	extCfg := &ext_kafka.ConfigMap{
+func newConsumerConfig(cfg kafka.Config) *ext_kafka.ConfigMap {
+	return &ext_kafka.ConfigMap{
 		"bootstrap.servers":             cfg.Brokers,
 		"group.id":                      cfg.ConsumerGroup,
 		"auto.offset.reset":             "earliest",
@@ -26,19 +25,37 @@ func NewConsumerHandler(cfg kafka.Config, repository orm.Repository) (kafka.Cons
 		"session.timeout.ms":            30000,
 		"max.poll.interval.ms":          300000,
 	}
+}
 
-	confluentConsumer, err := ext_kafka.NewConsumer(extCfg)
+func parseTopics(topics string) []string {
+	raw := strings.Split(topics, ",")
+	result := make([]string, 0, len(raw))
+	for _, t := range raw {
+		if trimmed := strings.TrimSpace(t); trimmed != "" {
+			result = append(result, trimmed)
+		}
+	}
+	return result
+}
+
+func NewConsumerHandler(cfg kafka.Config, repository orm.Repository) (kafka.ConsumerHandler, error) {
+	confluentConsumer, err := ext_kafka.NewConsumer(newConsumerConfig(cfg))
 	if err != nil {
 		return nil, err
 	}
 
-	err = confluentConsumer.SubscribeTopics(strings.Split(cfg.Topics, ","), nil)
+	topics := parseTopics(cfg.Topics)
+	if len(topics) == 0 {
+		_ = confluentConsumer.Close()
+		return nil, fmt.Errorf("no topics configured")
+	}
+
+	err = confluentConsumer.SubscribeTopics(topics, nil)
 	if err != nil {
+		_ = confluentConsumer.Close()
 		return nil, err
 	}
 
-	messageValueProcessor := message.NewMessageValueProcessor(repository)
-
-	consumerHandler := confluent.NewConsumer(confluentConsumer, messageValueProcessor, 5)
-	return consumerHandler, nil
+	processor := message.NewMessageValueProcessor(repository)
+	return confluent.NewConsumer(confluentConsumer, processor, defaultParallelWorkers), nil
 }

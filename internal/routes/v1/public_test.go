@@ -25,6 +25,8 @@ func (m *MockProducer) Produce(ctx context.Context, album *pb.Album) {
 	m.lastAlbum = album
 }
 
+func (m *MockProducer) Close() {}
+
 type MockRepository struct {
 }
 

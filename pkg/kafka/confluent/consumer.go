@@ -12,6 +12,14 @@ import (
 	"music-service/pkg/kafka/message"
 )
 
+const (
+	defaultTasksBufSize    = 1000
+	defaultAcksBufSize     = 1000
+	defaultPollTimeoutMs   = 100
+	defaultCommitInterval  = 5 * time.Second
+	minParallelWorkers     = 1
+)
+
 type ack struct {
 	tp  kafka.TopicPartition
 	off kafka.Offset
@@ -24,6 +32,9 @@ type consumer struct {
 }
 
 func NewConsumer(confluentConsumer *kafka.Consumer, messageValueProcessor message.MessageValueProcessor, parallelWorkers int) *consumer {
+	if parallelWorkers < minParallelWorkers {
+		parallelWorkers = minParallelWorkers
+	}
 	return &consumer{
 		confluentConsumer:     confluentConsumer,
 		messageValueProcessor: messageValueProcessor,
@@ -32,16 +43,14 @@ func NewConsumer(confluentConsumer *kafka.Consumer, messageValueProcessor messag
 }
 
 func (c *consumer) Consume(ctx context.Context) error {
-	tasks := make(chan *kafka.Message, 1000)
-	acks := make(chan ack, 1000)
+	tasks := make(chan *kafka.Message, defaultTasksBufSize)
+	acks := make(chan ack, defaultAcksBufSize)
 
 	var wg sync.WaitGroup
 	for i := 0; i < c.parallelWorkers; i++ {
 		wg.Add(1)
 		go func(workerID int) {
 			defer wg.Done()
-			log.Printf("worker %d started", workerID)
-
 			for {
 				select {
 				case <-ctx.Done():
@@ -50,13 +59,6 @@ func (c *consumer) Consume(ctx context.Context) error {
 					if !ok {
 						return
 					}
-
-					log.Printf(
-						"Processing message from %s[%d]@%d",
-						*msg.TopicPartition.Topic,
-						msg.TopicPartition.Partition,
-						msg.TopicPartition.Offset,
-					)
 
 					c.messageValueProcessor.Process(msg.Value)
 
@@ -70,7 +72,7 @@ func (c *consumer) Consume(ctx context.Context) error {
 	}
 
 	go func() {
-		ticker := time.NewTicker(5 * time.Second)
+		ticker := time.NewTicker(defaultCommitInterval)
 		defer ticker.Stop()
 
 		pending := make(map[kafka.TopicPartition]kafka.Offset)
@@ -96,24 +98,19 @@ func (c *consumer) Consume(ctx context.Context) error {
 
 			case <-ticker.C:
 				if len(pending) > 0 {
-					offsets, err := c.confluentConsumer.Commit()
+					_, err := c.confluentConsumer.Commit()
 					if err != nil {
 						log.Printf("Commit failed: %v", err)
-					} else {
-						log.Printf("Committed %d partitions", len(offsets))
 					}
-					pending = make(map[kafka.TopicPartition]kafka.Offset)
+					clear(pending)
 				}
 			}
 		}
 	}()
 
-	log.Println("starting consumer polling loop")
-
 	for {
 		select {
 		case <-ctx.Done():
-			log.Println("shutting down consumer...")
 			close(tasks)
 			wg.Wait()
 
@@ -125,7 +122,7 @@ func (c *consumer) Consume(ctx context.Context) error {
 			return c.confluentConsumer.Close()
 
 		default:
-			ev := c.confluentConsumer.Poll(100)
+			ev := c.confluentConsumer.Poll(defaultPollTimeoutMs)
 			if ev == nil {
 				continue
 			}
