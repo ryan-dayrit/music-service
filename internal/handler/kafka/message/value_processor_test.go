@@ -1,9 +1,9 @@
 package message
 
 import (
-	"errors"
 	"testing"
 
+	"github.com/go-pg/pg/v10"
 	"google.golang.org/protobuf/proto"
 
 	"music-service/gen/pb"
@@ -84,12 +84,12 @@ func TestMessageValueProcessor_ProcessMessageValue_CreateNewAlbum(t *testing.T) 
 		mockRepo := &mockRepository{}
 		processor := NewMessageValueProcessor(mockRepo)
 
-		// Setup mock to return "no rows in result set" error for GetById
+		// Setup mock to return pg.ErrNoRows for GetById
 		mockRepo.getByIdFunc = func(id int) (*models.Album, error) {
 			if id != 1 {
 				t.Errorf("Expected id 1, got %d", id)
 			}
-			return nil, errors.New("pg: no rows in result set")
+			return nil, pg.ErrNoRows
 		}
 
 		// Setup mock to verify Create is called with correct data
@@ -206,9 +206,9 @@ func TestMessageValueProcessor_ProcessMessageValue_WithZeroValues(t *testing.T) 
 		mockRepo := &mockRepository{}
 		processor := NewMessageValueProcessor(mockRepo)
 
-		// Setup mock to return "no rows in result set" error for GetById
+		// Setup mock to return pg.ErrNoRows for GetById
 		mockRepo.getByIdFunc = func(id int) (*models.Album, error) {
-			return nil, errors.New("pg: no rows in result set")
+			return nil, pg.ErrNoRows
 		}
 
 		// Setup mock to verify Create is called
@@ -252,14 +252,14 @@ func TestMessageValueProcessor_ProcessMessageValue_WithZeroValues(t *testing.T) 
 	})
 }
 
-func TestMessageValueProcessor_ProcessMessageValue_PriceGeneration(t *testing.T) {
-	t.Run("generates random price for album", func(t *testing.T) {
+func TestMessageValueProcessor_ProcessMessageValue_PriceFromProto(t *testing.T) {
+	t.Run("uses price from protobuf album", func(t *testing.T) {
 		mockRepo := &mockRepository{}
 		processor := NewMessageValueProcessor(mockRepo)
 
-		// Setup mock to return "no rows in result set" error for GetById
+		// Setup mock to return pg.ErrNoRows for GetById
 		mockRepo.getByIdFunc = func(id int) (*models.Album, error) {
-			return nil, errors.New("pg: no rows in result set")
+			return nil, pg.ErrNoRows
 		}
 
 		// Setup mock to capture the price
@@ -270,24 +270,21 @@ func TestMessageValueProcessor_ProcessMessageValue_PriceGeneration(t *testing.T)
 			return nil
 		}
 
-		// Create protobuf album and marshal it
 		protoAlbum := &pb.Album{
 			Id:     1,
 			Title:  "Test Album",
 			Artist: "Test Artist",
-			Price:  100.00, // This will be replaced with random price
+			Price:  99.50,
 		}
 		messageValue, err := proto.Marshal(protoAlbum)
 		if err != nil {
 			t.Fatalf("Failed to marshal proto album: %v", err)
 		}
 
-		// Process the message value
 		processor.Process(messageValue)
 
-		// Verify price is within range [0, 1)
-		if capturedPrice < 0 || capturedPrice >= 1 {
-			t.Errorf("Expected price to be in range [0, 1), got %f", capturedPrice)
+		if capturedPrice != 99.50 {
+			t.Errorf("Expected price 99.50, got %f", capturedPrice)
 		}
 	})
 }
@@ -306,9 +303,9 @@ func TestMessageValueProcessor_ProcessMessageValue_MultipleAlbums(t *testing.T) 
 		// Track which albums were created
 		createdAlbums := make(map[int]bool)
 
-		// Setup mock to return "no rows in result set" for all albums
+		// Setup mock to return pg.ErrNoRows for all albums
 		mockRepo.getByIdFunc = func(id int) (*models.Album, error) {
-			return nil, errors.New("pg: no rows in result set")
+			return nil, pg.ErrNoRows
 		}
 
 		// Setup mock to track created albums

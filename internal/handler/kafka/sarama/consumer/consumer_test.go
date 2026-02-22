@@ -310,13 +310,12 @@ func TestConsume_CloseError(t *testing.T) {
 		<-ctx.Done()
 	}).Return(nil)
 
-	// Close returns an error - this will cause a panic in the actual code
+	// Close returns an error - Consume should return it
 	mockCG.On("Close").Return(errors.New("close error"))
 
-	// We expect a panic due to the close error
-	assert.Panics(t, func() {
-		h.Consume(ctx)
-	})
+	err := h.Consume(ctx)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "close error")
 }
 
 // TestToggleConsumptionFlow tests the toggleConsumptionFlow function

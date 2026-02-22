@@ -39,21 +39,29 @@ func NewConsumerHandler(cfg kafka.Config, repository orm.Repository) (kafka.Cons
 
 func (h *consumerHandler) Consume(ctx context.Context) error {
 	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 
 	messageValueProcessor := message.NewMessageValueProcessor(h.repository)
 	consumerGroupHandler := NewConsumerGroupHandler(make(chan bool), messageValueProcessor)
 
 	consumptionIsPaused := false
+	var consumeErr error
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
+		topics := strings.Split(h.cfg.Topics, ",")
+		for i := range topics {
+			topics[i] = strings.TrimSpace(topics[i])
+		}
 		for {
-			if err := h.consumerGroup.Consume(ctx, strings.Split(h.cfg.Topics, ","), consumerGroupHandler); err != nil {
+			if err := h.consumerGroup.Consume(ctx, topics, consumerGroupHandler); err != nil {
 				if errors.Is(err, sarama.ErrClosedConsumerGroup) {
 					return
 				}
-				log.Panicf("Error from consumer: %v", err)
+				consumeErr = err
+				log.Printf("consumer error: %v", err)
+				return
 			}
 			if ctx.Err() != nil {
 				return
@@ -85,10 +93,12 @@ func (h *consumerHandler) Consume(ctx context.Context) error {
 	cancel()
 	wg.Wait()
 	if err := h.consumerGroup.Close(); err != nil {
-		log.Panicf("Error closing client: %v", err)
+		log.Printf("error closing consumer: %v", err)
+		if consumeErr == nil {
+			consumeErr = err
+		}
 	}
-
-	return nil
+	return consumeErr
 }
 
 func toggleConsumptionFlow(client sarama.ConsumerGroup, isPaused *bool) {
