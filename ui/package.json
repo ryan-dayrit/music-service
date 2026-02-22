@@ -6,10 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:e2e": "cypress run",
+    "test:e2e:open": "cypress open"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "cypress": "^15.10.0",
     "svelte": "^5.45.2",
     "vite": "^7.3.1"
   },
