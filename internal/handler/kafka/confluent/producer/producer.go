@@ -12,13 +12,10 @@ import (
 	"music-service/pkg/kafka"
 )
 
-const deliveryChanSize = 1000
-
 type producerHandler struct {
 	cfg               kafka.Config
 	topic             string
 	confluentProducer *ext_kafka.Producer
-	deliveryChan      chan ext_kafka.Event
 }
 
 func NewProducerHandler(cfg kafka.Config) (kafka.ProducerHandler, error) {
@@ -36,7 +33,6 @@ func NewProducerHandler(cfg kafka.Config) (kafka.ProducerHandler, error) {
 		cfg:               cfg,
 		topic:             topic,
 		confluentProducer: confluentProducer,
-		deliveryChan:      make(chan ext_kafka.Event, deliveryChanSize),
 	}
 
 	go p.runDeliveryReports()
@@ -45,7 +41,7 @@ func NewProducerHandler(cfg kafka.Config) (kafka.ProducerHandler, error) {
 }
 
 func (p *producerHandler) runDeliveryReports() {
-	for e := range p.deliveryChan {
+	for e := range p.confluentProducer.Events() {
 		msg, ok := e.(*ext_kafka.Message)
 		if !ok {
 			continue
@@ -72,7 +68,7 @@ func (p *producerHandler) Produce(ctx context.Context, album *pb.Album) {
 	err = p.confluentProducer.Produce(&ext_kafka.Message{
 		TopicPartition: ext_kafka.TopicPartition{Topic: &p.topic, Partition: ext_kafka.PartitionAny},
 		Value:          marshaledAlbum,
-	}, p.deliveryChan)
+	}, nil)
 	if err != nil {
 		log.Panicf("failed to produce album: %v", err)
 	}
