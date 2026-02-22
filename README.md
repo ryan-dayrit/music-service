@@ -10,6 +10,16 @@ the UI is written in Svelte
 
 the UI acceptance tests are written in Cypress
 
+# Components 
+1. PostgreSQL database in minikube with DDL/DML initialization scripts
+2. Kafka in docker with a topic and a consumer group
+3. gRPC API (internal) to service the data in the Postgres database 
+4. REST API (external) using fiber library to receive JSON payloads and produce a Protobuf message to a kakfa topic
+5. Kafka consumer using sarama library to process Protobuf messages from a Kafka topic
+6. Kafka consumer using confluent library to process Protobuf messages from a Kafka topic
+7. UI using svelte which calls the REST API to show the results and add an album
+8. Cypress acceptance tests for the UI
+
 # Processing Flow
 Writes 
 1. REST API POST/PUT receiver for json payloads
@@ -41,13 +51,3 @@ go test -tags=integration ./tests/integration/...
 ```
 
 Tests cover REST API, gRPC server, and ORM repository.
-
-# Components 
-1. PostgreSQL database in minikube with DDL/DML initialization scripts
-2. Kafka in docker with a topic and a consumer group
-3. gRPC API (internal) to service the data in the Postgres database 
-4. REST API (external) using fiber library to receive JSON payloads and produce a Protobuf message to a kakfa topic
-5. Kafka consumer using sarama library to process Protobuf messages from a Kafka topic
-6. Kafka consumer using confluent library to process Protobuf messages from a Kafka topic
-7. UI using svelte which calls the REST API to show the results and add an album
-8. Cypress acceptance tests for the UI
