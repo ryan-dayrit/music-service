@@ -31,6 +31,7 @@ describe('Add Album', () => {
     cy.contains('Album added successfully')
     cy.get('#title').should('have.value', '')
     cy.get('#artist').should('have.value', '')
+    cy.get('#price').should('have.value', '')
   })
 
   it('disables submit button while submitting', () => {
