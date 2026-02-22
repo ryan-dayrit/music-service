@@ -1,32 +1,42 @@
 <script>
-  import logo from './assets/logo.jpeg'
-  import Fetch from './lib/Fetch.svelte'
+  import Router from 'svelte-spa-router';
+  import Home from './pages/Home.svelte';
+  import AlbumsList from './pages/AlbumsList.svelte';
+  import AddAlbum from './pages/AddAlbum.svelte';
+
+  const routes = {
+    '/': Home,
+    '/albums': AlbumsList,
+    '/add': AddAlbum,
+  };
 </script>
 
 <main>
-  <div>
-    <a href="https://github.com/ryan-dayrit" target="_blank" rel="noreferrer">
-      <img src={logo} class="logo" alt="Logo" />
-    </a>
-  </div>
+  <nav class="nav">
+    <a href="#/">Music Service</a>
+    <a href="#/albums">Albums</a>
+    <a href="#/add">Add Album</a>
+  </nav>
 
-  <div class="card">
-    <Fetch />
+  <div class="content">
+    <Router {routes} />
   </div>
-
 </main>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
+  .nav {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1rem 0 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 2rem;
   }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
+
+  .nav a {
+    font-weight: 500;
   }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
+
+  .content {
+    min-height: 200px;
   }
 </style>
