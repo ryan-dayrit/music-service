@@ -47,12 +47,11 @@ Reads
 9. REST API client which sends put/post requests to REST API albums endpoint
 
 # Integration Tests
-Backend integration tests use [testcontainers-go](https://golang.testcontainers.org/) to spin up a PostgreSQL container. They are excluded from normal test runs via the `integration` build tag.
-
 Run integration tests (requires Docker):
 ```bash
 go test -tags=integration ./tests/integration/...
 ```
 
 Tests cover REST API, gRPC server, and ORM repository.
+
 
