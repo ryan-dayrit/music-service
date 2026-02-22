@@ -16,7 +16,7 @@ Components
 4. REST API (external) using fiber library to receive JSON payloads and produce a Protobuf message to a kakfa topic
 5. Kafka consumer using sarama library to process Protobuf messages from a Kafka topic
 6. Kafka consumer using confluent library to process Protobuf messages from a Kafka topic
-7. UI using svelte which calls the REST API and shows the results 
+7. UI using svelte which calls the REST API to shows the results and add an album
    
 Writes 
 1. REST API POST/PUT receiver for json payloads
