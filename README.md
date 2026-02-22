@@ -12,7 +12,8 @@ UI is written in Svelte
 
 UI acceptance tests are written in Cypress
 
-Backend integration tests use testcontainers-go to spin up a PostgreSQL container. They are excluded from normal test runs via the integration build tag.
+Backend integration tests use testcontainers-go to spin up a PostgreSQL container.
+  * They are excluded from normal test runs via the integration build tag.
 
 # Components 
 1. PostgreSQL database in minikube with DDL/DML initialization scripts
@@ -53,6 +54,7 @@ go test -tags=integration ./tests/integration/...
 ```
 
 Tests cover REST API, gRPC server, and ORM repository.
+
 
 
 
