@@ -58,6 +58,13 @@ func (p *producerHandler) runDeliveryReports() {
 	}
 }
 
+func (p *producerHandler) Close() {
+	if remaining := p.confluentProducer.Flush(5000); remaining > 0 {
+		log.Printf("producer flushed with %d message(s) remaining undelivered", remaining)
+	}
+	p.confluentProducer.Close()
+}
+
 func (p *producerHandler) Produce(ctx context.Context, album *pb.Album) {
 	select {
 	case <-ctx.Done():

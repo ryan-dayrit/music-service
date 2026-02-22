@@ -25,6 +25,8 @@ func (m *mockProducerHandler) Produce(ctx context.Context, album *pb.Album) {
 	}
 }
 
+func (m *mockProducerHandler) Close() {}
+
 func TestNewAlbumHandler(t *testing.T) {
 	t.Run("creates new album handler successfully", func(t *testing.T) {
 		mockProducer := &mockProducerHandler{}

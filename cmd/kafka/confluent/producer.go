@@ -30,6 +30,7 @@ func NewKafkaProducerCommand() *cobra.Command {
 			if err != nil {
 				log.Panicf("error creating confluent producer handler: %v", err)
 			}
+			defer producerHandler.Close()
 
 			album := &pb.Album{
 				Id:     rand.Int32(),
