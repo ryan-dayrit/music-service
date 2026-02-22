@@ -20,8 +20,30 @@
       });
 
       if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || `HTTP ${response.status}`);
+        const contentType = response.headers.get('content-type') || '';
+        let message = `HTTP ${response.status}`;
+
+        if (contentType.includes('application/json')) {
+          try {
+            const err = await response.json();
+            if (err && typeof err === 'object' && typeof err.error === 'string' && err.error.trim() !== '') {
+              message = err.error;
+            }
+          } catch {
+            // Ignore JSON parsing errors and fall back to default message or text body.
+          }
+        } else {
+          try {
+            const text = await response.text();
+            if (text && text.trim() !== '') {
+              message = text;
+            }
+          } catch {
+            // Ignore text reading errors and fall back to default message.
+          }
+        }
+
+        throw new Error(message);
       }
 
       success = true;
