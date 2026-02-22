@@ -25,6 +25,12 @@ func NewProducerHandler(cfg kafka.Config) (kafka.ProducerHandler, error) {
 	return &producerHandler{cfg: cfg, syncProducer: syncProducer}, nil
 }
 
+func (p *producerHandler) Close() {
+	if err := p.syncProducer.Close(); err != nil {
+		log.Printf("failed to close sarama producer: %v", err)
+	}
+}
+
 func (p *producerHandler) Produce(ctx context.Context, album *pb.Album) {
 	marshaledAlbum, err := proto.Marshal(album)
 	if err != nil {

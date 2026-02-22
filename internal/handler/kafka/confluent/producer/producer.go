@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"strings"
+	"sync"
 
 	ext_kafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"google.golang.org/protobuf/proto"
@@ -12,13 +13,17 @@ import (
 	"music-service/pkg/kafka"
 )
 
-const deliveryChanSize = 1000
+const (
+	deliveryChanSize = 1000
+	flushTimeoutMs   = 5000
+)
 
 type producerHandler struct {
 	cfg               kafka.Config
 	topic             string
 	confluentProducer *ext_kafka.Producer
 	deliveryChan      chan ext_kafka.Event
+	wg                sync.WaitGroup
 }
 
 func NewProducerHandler(cfg kafka.Config) (kafka.ProducerHandler, error) {
@@ -39,12 +44,14 @@ func NewProducerHandler(cfg kafka.Config) (kafka.ProducerHandler, error) {
 		deliveryChan:      make(chan ext_kafka.Event, deliveryChanSize),
 	}
 
+	p.wg.Add(1)
 	go p.runDeliveryReports()
 
 	return p, nil
 }
 
 func (p *producerHandler) runDeliveryReports() {
+	defer p.wg.Done()
 	for e := range p.deliveryChan {
 		msg, ok := e.(*ext_kafka.Message)
 		if !ok {
@@ -54,6 +61,13 @@ func (p *producerHandler) runDeliveryReports() {
 			log.Printf("failed to deliver message: %v", msg.TopicPartition.Error)
 		}
 	}
+}
+
+func (p *producerHandler) Close() {
+	p.confluentProducer.Flush(flushTimeoutMs)
+	close(p.deliveryChan)
+	p.wg.Wait()
+	p.confluentProducer.Close()
 }
 
 func (p *producerHandler) Produce(ctx context.Context, album *pb.Album) {
