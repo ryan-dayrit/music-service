@@ -48,10 +48,10 @@
       <tbody>
         {#each albums as album}
           <tr>
-            <td>{album.id ?? album.Id}</td>
-            <td>{album.title ?? album.Title}</td>
-            <td>{album.artist ?? album.Artist}</td>
-            <td>{album.price ?? album.Price}</td>
+            <td>{album.id}</td>
+            <td>{album.title}</td>
+            <td>{album.artist}</td>
+            <td>{album.price}</td>
           </tr>
         {/each}
       </tbody>
