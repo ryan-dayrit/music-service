@@ -6,9 +6,13 @@ practice Golang backend application using
   * PostgreSQL
   * Protobuf
 
-the UI is written in Svelte 
+UI is written in Svelte.
+  * It shows abums in Postgres by calling the REST API
+  * It adds an album enterred and sends it to the REST API
 
-the UI acceptance tests are written in Cypress
+UI acceptance tests are written in Cypress
+
+Backend integration tests use testcontainers-go to spin up a PostgreSQL container. They are excluded from normal test runs via the integration build tag.
 
 # Components 
 1. PostgreSQL database in minikube with DDL/DML initialization scripts
@@ -51,3 +55,4 @@ go test -tags=integration ./tests/integration/...
 ```
 
 Tests cover REST API, gRPC server, and ORM repository.
+
