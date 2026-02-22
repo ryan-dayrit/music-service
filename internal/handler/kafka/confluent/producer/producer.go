@@ -57,6 +57,13 @@ func (p *producerHandler) runDeliveryReports() {
 }
 
 func (p *producerHandler) Produce(ctx context.Context, album *pb.Album) {
+	select {
+	case <-ctx.Done():
+		log.Printf("produce cancelled: %v", ctx.Err())
+		return
+	default:
+	}
+
 	marshaledAlbum, err := proto.Marshal(album)
 	if err != nil {
 		log.Panicf("failed to marshal album: %v", err)
