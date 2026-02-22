@@ -1,8 +1,10 @@
 package producer
 
 import (
+	"context"
 	"testing"
 
+	"music-service/gen/pb"
 	"music-service/pkg/kafka"
 )
 
@@ -106,6 +108,26 @@ func TestProducerHandler_Struct(t *testing.T) {
 
 func TestProducerHandler_InterfaceCompliance(t *testing.T) {
 	var _ kafka.ProducerHandler = (*producerHandler)(nil)
+}
+
+func TestProducerHandler_Produce_CancelledContext(t *testing.T) {
+	// With a nil confluentProducer, calling Produce() with a cancelled context
+	// should return early without panicking (context check happens before producer call).
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	ph := &producerHandler{
+		cfg: kafka.Config{
+			Brokers: "localhost:9092",
+			Topics:  "test-topic",
+		},
+		topic:             "test-topic",
+		confluentProducer: nil,
+	}
+
+	// Should not panic even though confluentProducer is nil,
+	// because ctx is already cancelled and we return early.
+	ph.Produce(ctx, &pb.Album{Id: 1, Title: "Test Album"})
 }
 
 func TestNewProducerHandler_ValidBrokers(t *testing.T) {
