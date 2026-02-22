@@ -10,26 +10,6 @@ the UI is written in Svelte
 
 the UI acceptance tests are written in Cypress
 
-# Integration Tests
-Backend integration tests use [testcontainers-go](https://golang.testcontainers.org/) to spin up a PostgreSQL container. They are excluded from normal test runs via the `integration` build tag.
-
-Run integration tests (requires Docker):
-```bash
-go test -tags=integration ./tests/integration/...
-```
-
-Tests cover REST API, gRPC server, and ORM repository.
-
-# Components 
-1. PostgreSQL database in minikube with DDL/DML initialization scripts
-2. Kafka in docker with a topic and a consumer group
-3. gRPC API (internal) to service the data in the Postgres database 
-4. REST API (external) using fiber library to receive JSON payloads and produce a Protobuf message to a kakfa topic
-5. Kafka consumer using sarama library to process Protobuf messages from a Kafka topic
-6. Kafka consumer using confluent library to process Protobuf messages from a Kafka topic
-7. UI using svelte which calls the REST API to show the results and add an album
-8. Cypress acceptance tests for the UI
-
 # Processing Flow
 Writes 
 1. REST API POST/PUT receiver for json payloads
@@ -52,4 +32,22 @@ Reads
 8. REST API client which sends put/post requests to REST API album endpoint
 9. REST API client which sends put/post requests to REST API albums endpoint
 
+# Integration Tests
+Backend integration tests use [testcontainers-go](https://golang.testcontainers.org/) to spin up a PostgreSQL container. They are excluded from normal test runs via the `integration` build tag.
 
+Run integration tests (requires Docker):
+```bash
+go test -tags=integration ./tests/integration/...
+```
+
+Tests cover REST API, gRPC server, and ORM repository.
+
+# Components 
+1. PostgreSQL database in minikube with DDL/DML initialization scripts
+2. Kafka in docker with a topic and a consumer group
+3. gRPC API (internal) to service the data in the Postgres database 
+4. REST API (external) using fiber library to receive JSON payloads and produce a Protobuf message to a kakfa topic
+5. Kafka consumer using sarama library to process Protobuf messages from a Kafka topic
+6. Kafka consumer using confluent library to process Protobuf messages from a Kafka topic
+7. UI using svelte which calls the REST API to show the results and add an album
+8. Cypress acceptance tests for the UI
