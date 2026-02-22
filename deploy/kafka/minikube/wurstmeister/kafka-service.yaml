@@ -6,11 +6,15 @@ metadata:
   name: kafka
 spec:
   ports:
-   - name: port
-     port: 9092
-     protocol: TCP
-     targetPort: 9092
+    - name: internal
+      port: 9092
+      protocol: TCP
+      targetPort: 9092
+    - name: external
+      port: 9093
+      protocol: TCP
+      targetPort: 9093
+      nodePort: 30093
   selector:
     app: kafka
-  clusterIP: None
-  type: ClusterIP
+  type: NodePort
