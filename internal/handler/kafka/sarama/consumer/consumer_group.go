@@ -30,16 +30,18 @@ func (_ *consumerGroupHandler) Cleanup(sarama.ConsumerGroupSession) error {
 }
 
 func (h *consumerGroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
+	if h.MessageValueProcessor == nil {
+		return nil
+	}
 	for {
 		select {
-		case message, ok := <-claim.Messages():
+		case msg, ok := <-claim.Messages():
 			if !ok {
 				log.Printf("message channel was closed")
 				return nil
 			}
-
-			h.MessageValueProcessor.Process(message.Value)
-			session.MarkMessage(message, "")
+			h.MessageValueProcessor.Process(msg.Value)
+			session.MarkMessage(msg, "")
 		case <-session.Context().Done():
 			return nil
 		}
