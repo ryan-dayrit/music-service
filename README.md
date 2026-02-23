@@ -61,3 +61,10 @@ go test -tags=integration ./tests/integration/...
 
 Tests cover REST API, gRPC server, Sqlx repository, and ORM repository
 
+# E2E Tests
+```bash
+cd ui
+npm run dev           # start dev server in one terminal
+npm run test:e2e      # run tests headlessly
+npm run test:e2e:open # open Cypress interactive UI
+```
