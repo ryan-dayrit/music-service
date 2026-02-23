@@ -10,7 +10,7 @@ UI is written in Svelte
   * It shows abums in Postgres by calling the REST API
   * It adds an album enterred by sending it to REST API
 
-UI acceptance tests are written in Cypress
+UI e2e tests are written in Cypress
 
 Backend integration tests use testcontainers-go to spin up a PostgreSQL container
   * They are excluded from normal test runs via the integration build tag
@@ -68,3 +68,4 @@ npm run dev           # start dev server in one terminal
 npm run test:e2e      # run tests headlessly
 npm run test:e2e:open # open Cypress interactive UI
 ```
+
