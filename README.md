@@ -8,7 +8,7 @@ practice Golang backend application using
 
 UI is written in Svelte
   * It shows abums in Postgres by calling the REST API
-  * It adds an album enterred and sends it to the REST API
+  * It adds an album enterred by sending it to REST API
 
 UI acceptance tests are written in Cypress
 
@@ -60,3 +60,4 @@ go test -tags=integration ./tests/integration/...
 ```
 
 Tests cover REST API, gRPC server, Sqlx repository, and ORM repository
+
