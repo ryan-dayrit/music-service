@@ -47,15 +47,16 @@ Reads
 8. REST API client which sends put/post requests to REST API album endpoint
 9. REST API client which sends put/post requests to REST API albums endpoint
 
+# Unit Tests
+Run unit tests:
+```bash
+go test ./...
+```
+
 # Integration Tests
 Run integration tests (requires Docker):
 ```bash
 go test -tags=integration ./tests/integration/...
 ```
 
-Tests cover REST API, gRPC server, and ORM repository.
-
-
-
-
-
+Tests cover REST API, gRPC server, Sqlx repository, and ORM repository
