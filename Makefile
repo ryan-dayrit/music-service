@@ -2,13 +2,14 @@ GO      	:= go
 GOBUILD 	:= $(GO) build
 GOTEST  	:= $(GO) test
 GOCLEAN		:= $(GO) clean
+SWAG    	:= $(GO) run github.com/swaggo/swag/cmd/swag@v1.8.1
 
 GEN_FOLDER	:= gen
 PROTO_FOLDER = proto/music
 
 BINARY  	:= bin/music-service
 
-.PHONY: all build test clean run gen
+.PHONY: all build test clean run gen gen-openapi
 	
 all: run
 
@@ -29,3 +30,6 @@ run: build
 gen: clean
 	mkdir -p ${GEN_FOLDER}
 	protoc --proto_path=${PROTO_FOLDER} --go_out=. --go-grpc_out=. ${PROTO_FOLDER}/models.proto ${PROTO_FOLDER}/service.proto 
+
+gen-openapi:
+	$(SWAG) init -g server.go -d cmd/rest/server,internal/handler/rest/v1,internal/routes/v1 -o docs --parseInternal --parseDependency

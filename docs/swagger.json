@@ -1,24 +1,92 @@
 {
+    "schemes": [
+        "http"
+    ],
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "REST API for creating and reading albums.",
+        "title": "Music Service REST API",
+        "contact": {},
+        "version": "1.0"
     },
+    "host": "localhost:3000",
+    "basePath": "/api/v1",
     "paths": {
         "/album": {
-            "post": {
+            "put": {
+                "description": "Queues a single album for asynchronous persistence.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Creates an album",
+                "tags": [
+                    "albums"
+                ],
+                "summary": "Create an album",
                 "operationId": "create-album",
+                "parameters": [
+                    {
+                        "description": "Album payload",
+                        "name": "album",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.Album"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/pb.Album"
-                            }
+                            "$ref": "#/definitions/pb.Album"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Queues a single album for asynchronous persistence.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "albums"
+                ],
+                "summary": "Create an album",
+                "operationId": "create-album",
+                "parameters": [
+                    {
+                        "description": "Album payload",
+                        "name": "album",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.Album"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/pb.Album"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
                         }
                     }
                 }
@@ -26,10 +94,14 @@
         },
         "/albums": {
             "get": {
+                "description": "Returns all persisted albums.",
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Gets all albums",
+                "tags": [
+                    "albums"
+                ],
+                "summary": "Get all albums",
                 "operationId": "get-albums",
                 "responses": {
                     "200": {
@@ -40,15 +112,42 @@
                                 "$ref": "#/definitions/pb.Album"
                             }
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
                     }
                 }
             },
-            "post": {
+            "put": {
+                "description": "Queues multiple albums for asynchronous persistence.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Creates albums",
+                "tags": [
+                    "albums"
+                ],
+                "summary": "Create albums",
                 "operationId": "create-albums",
+                "parameters": [
+                    {
+                        "description": "Album payload",
+                        "name": "albums",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/pb.Album"
+                            }
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -57,6 +156,78 @@
                             "items": {
                                 "$ref": "#/definitions/pb.Album"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Queues multiple albums for asynchronous persistence.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "albums"
+                ],
+                "summary": "Create albums",
+                "operationId": "create-albums",
+                "parameters": [
+                    {
+                        "description": "Album payload",
+                        "name": "albums",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/pb.Album"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/pb.Album"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "Returns service health status.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Health check",
+                "operationId": "health-check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.HealthResponse"
                         }
                     }
                 }
@@ -78,6 +249,24 @@
                 },
                 "title": {
                     "type": "string"
+                }
+            }
+        },
+        "v1.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "cannot parse JSON"
+                }
+            }
+        },
+        "v1.HealthResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "OK"
                 }
             }
         }

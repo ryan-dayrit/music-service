@@ -14,6 +14,11 @@ type albumsHandler struct {
 	repository      orm.Repository
 }
 
+// ErrorResponse describes an API error payload.
+type ErrorResponse struct {
+	Error string `json:"error" example:"cannot parse JSON"`
+}
+
 func NewAlbumsHandler(producerHandler kafka.ProducerHandler, repository orm.Repository) *albumsHandler {
 	return &albumsHandler{
 		producerHandler: producerHandler,
@@ -21,11 +26,17 @@ func NewAlbumsHandler(producerHandler kafka.ProducerHandler, repository orm.Repo
 	}
 }
 
-// @Summary Creates albums
+// @Summary Create albums
+// @Description Queues multiple albums for asynchronous persistence.
 // @ID create-albums
+// @Tags albums
+// @Accept json
 // @Produce json
+// @Param albums body []pb.Album true "Album payload"
 // @Success 201 {array} pb.Album
-// @Router /albums [post] [put]
+// @Failure 400 {object} ErrorResponse
+// @Router /albums [post]
+// @Router /albums [put]
 func (h *albumsHandler) CreateAlbums(ctx *fiber.Ctx) error {
 	newAlbums := []*pb.Album{}
 	if err := ctx.BodyParser(&newAlbums); err != nil {
@@ -39,10 +50,13 @@ func (h *albumsHandler) CreateAlbums(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusCreated).JSON(newAlbums)
 }
 
-// @Summary Gets all albums
+// @Summary Get all albums
+// @Description Returns all persisted albums.
 // @ID get-albums
+// @Tags albums
 // @Produce json
 // @Success 200 {array} pb.Album
+// @Failure 500 {object} ErrorResponse
 // @Router /albums [get]
 func (h *albumsHandler) GetAlbums(ctx *fiber.Ctx) error {
 	albums, err := h.repository.Get()
