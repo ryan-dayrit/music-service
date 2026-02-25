@@ -104,7 +104,7 @@ func TestKafkaConsumers_ConsumeAlbumMessages_Integration(t *testing.T) {
 			if createdAlbum.Artist != createAlbum.Artist {
 				t.Fatalf("expected created artist %q, got %q", createAlbum.Artist, createdAlbum.Artist)
 			}
-			if !createdAlbum.Price.Equal(decimal.RequireFromString("19.50")) {
+			if !createdAlbum.Price.Equals(decimal.RequireFromString("19.50")) {
 				t.Fatalf("expected created price 19.50, got %s", createdAlbum.Price.String())
 			}
 
