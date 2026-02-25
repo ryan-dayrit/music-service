@@ -11,10 +11,10 @@ import (
 func RegisterPublicRoutes(router fiber.Router, producerHandler kafka.ProducerHandler, repository orm.Repository) {
 	albumHandler := v1.NewAlbumHandler(producerHandler)
 	router.Post("/album", albumHandler.CreateAlbum)
-	router.Put("/album", albumHandler.CreateAlbum)
+	router.Put("/album", albumHandler.UpsertAlbum)
 
 	albumsHandler := v1.NewAlbumsHandler(producerHandler, repository)
 	router.Post("/albums", albumsHandler.CreateAlbums)
-	router.Put("/albums", albumsHandler.CreateAlbums)
+	router.Put("/albums", albumsHandler.UpsertAlbums)
 	router.Get("/albums", albumsHandler.GetAlbums)
 }

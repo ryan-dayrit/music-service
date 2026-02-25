@@ -17,12 +17,35 @@ func NewAlbumHandler(producerHandler kafka.ProducerHandler) *albumHandler {
 	}
 }
 
-// @Summary Creates an album
+// @Summary Create an album
+// @Description Queues a single album for asynchronous persistence.
 // @ID create-album
+// @Tags albums
+// @Accept json
 // @Produce json
-// @Success 201 {array} pb.Album
-// @Router /album [post] [put]
+// @Param album body pb.Album true "Album payload"
+// @Success 201 {object} pb.Album
+// @Failure 400 {object} ErrorResponse
+// @Router /album [post]
 func (h *albumHandler) CreateAlbum(ctx *fiber.Ctx) error {
+	return h.handleAlbumWrite(ctx)
+}
+
+// @Summary Upsert an album
+// @Description Queues a single album for asynchronous persistence.
+// @ID upsert-album
+// @Tags albums
+// @Accept json
+// @Produce json
+// @Param album body pb.Album true "Album payload"
+// @Success 201 {object} pb.Album
+// @Failure 400 {object} ErrorResponse
+// @Router /album [put]
+func (h *albumHandler) UpsertAlbum(ctx *fiber.Ctx) error {
+	return h.handleAlbumWrite(ctx)
+}
+
+func (h *albumHandler) handleAlbumWrite(ctx *fiber.Ctx) error {
 	newAlbum := &pb.Album{}
 	if err := ctx.BodyParser(newAlbum); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{

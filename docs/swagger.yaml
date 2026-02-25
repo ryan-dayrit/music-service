@@ -1,3 +1,4 @@
+basePath: /api/v1
 definitions:
   pb.Album:
     properties:
@@ -10,24 +11,81 @@ definitions:
       title:
         type: string
     type: object
+  v1.ErrorResponse:
+    properties:
+      error:
+        example: cannot parse JSON
+        type: string
+    type: object
+  v1.HealthResponse:
+    properties:
+      status:
+        example: OK
+        type: string
+    type: object
+host: localhost:3000
 info:
   contact: {}
+  description: REST API for creating and reading albums.
+  title: Music Service REST API
+  version: "1.0"
 paths:
   /album:
     post:
+      consumes:
+      - application/json
+      description: Queues a single album for asynchronous persistence.
       operationId: create-album
+      parameters:
+      - description: Album payload
+        in: body
+        name: album
+        required: true
+        schema:
+          $ref: '#/definitions/pb.Album'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            items:
-              $ref: '#/definitions/pb.Album'
-            type: array
-      summary: Creates an album
+            $ref: '#/definitions/pb.Album'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.ErrorResponse'
+      summary: Create an album
+      tags:
+      - albums
+    put:
+      consumes:
+      - application/json
+      description: Queues a single album for asynchronous persistence.
+      operationId: upsert-album
+      parameters:
+      - description: Album payload
+        in: body
+        name: album
+        required: true
+        schema:
+          $ref: '#/definitions/pb.Album'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/pb.Album'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.ErrorResponse'
+      summary: Upsert an album
+      tags:
+      - albums
   /albums:
     get:
+      description: Returns all persisted albums.
       operationId: get-albums
       produces:
       - application/json
@@ -38,9 +96,27 @@ paths:
             items:
               $ref: '#/definitions/pb.Album'
             type: array
-      summary: Gets all albums
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.ErrorResponse'
+      summary: Get all albums
+      tags:
+      - albums
     post:
+      consumes:
+      - application/json
+      description: Queues multiple albums for asynchronous persistence.
       operationId: create-albums
+      parameters:
+      - description: Album payload
+        in: body
+        name: albums
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/pb.Album'
+          type: array
       produces:
       - application/json
       responses:
@@ -50,5 +126,57 @@ paths:
             items:
               $ref: '#/definitions/pb.Album'
             type: array
-      summary: Creates albums
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.ErrorResponse'
+      summary: Create albums
+      tags:
+      - albums
+    put:
+      consumes:
+      - application/json
+      description: Queues multiple albums for asynchronous persistence.
+      operationId: upsert-albums
+      parameters:
+      - description: Album payload
+        in: body
+        name: albums
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/pb.Album'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/pb.Album'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.ErrorResponse'
+      summary: Upsert albums
+      tags:
+      - albums
+  /health:
+    get:
+      description: Returns service health status.
+      operationId: health-check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.HealthResponse'
+      summary: Health check
+      tags:
+      - health
+schemes:
+- http
 swagger: "2.0"

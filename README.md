@@ -53,6 +53,17 @@ Run unit tests:
 go test ./...
 ```
 
+# OpenAPI Contract
+Generate the REST API contract from route annotations:
+```bash
+make gen-openapi
+```
+
+Generated files:
+* `docs/docs.go`
+* `docs/swagger.json`
+* `docs/swagger.yaml`
+
 # Integration Tests
 Run integration tests (requires Docker):
 ```bash

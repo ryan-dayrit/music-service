@@ -17,11 +17,11 @@ import (
 	"music-service/pkg/rest"
 )
 
-// @title Go + Fiber API
+// @title Music Service REST API
 // @version 1.0
-// @description This is a sample server.
+// @description REST API for creating and reading albums.
 // @host localhost:3000
-// @BasePath /
+// @BasePath /api/v1
 // @schemes http
 func NewRestServerCommand() *cobra.Command {
 	return &cobra.Command{
