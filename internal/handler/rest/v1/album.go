@@ -27,7 +27,6 @@ func NewAlbumHandler(producerHandler kafka.ProducerHandler) *albumHandler {
 // @Success 201 {object} pb.Album
 // @Failure 400 {object} ErrorResponse
 // @Router /album [post]
-// @Router /album [put]
 func (h *albumHandler) CreateAlbum(ctx *fiber.Ctx) error {
 	newAlbum := &pb.Album{}
 	if err := ctx.BodyParser(newAlbum); err != nil {
