@@ -128,14 +128,23 @@ func TestKafkaConsumers_ConsumeAlbumMessages_Integration(t *testing.T) {
 			}
 			produceAlbumMessage(t, broker, topic, updateAlbum)
 
-			updatedAlbum := waitForAlbumByID(t, db, existingAlbumID, 20*time.Second)
+			expectedUpdatedPrice := decimal.RequireFromString("33.75")
+			updatedAlbum := waitForAlbumByID(
+				t,
+				db,
+				existingAlbumID,
+				updateAlbum.Title,
+				updateAlbum.Artist,
+				expectedUpdatedPrice,
+				20*time.Second,
+			)
 			if updatedAlbum.Title != updateAlbum.Title {
 				t.Fatalf("expected updated title %q, got %q", updateAlbum.Title, updatedAlbum.Title)
 			}
 			if updatedAlbum.Artist != updateAlbum.Artist {
 				t.Fatalf("expected updated artist %q, got %q", updateAlbum.Artist, updatedAlbum.Artist)
 			}
-			if !updatedAlbum.Price.Equal(decimal.RequireFromString("33.75")) {
+			if !updatedAlbum.Price.Equal(expectedUpdatedPrice) {
 				t.Fatalf("expected updated price 33.75, got %s", updatedAlbum.Price.String())
 			}
 		})
@@ -347,21 +356,45 @@ func waitForAlbumByTitle(t *testing.T, db *pg.DB, title string, timeout time.Dur
 	return nil
 }
 
-func waitForAlbumByID(t *testing.T, db *pg.DB, id int, timeout time.Duration) *models.Album {
+func waitForAlbumByID(
+	t *testing.T,
+	db *pg.DB,
+	id int,
+	expectedTitle string,
+	expectedArtist string,
+	expectedPrice decimal.Decimal,
+	timeout time.Duration,
+) *models.Album {
 	t.Helper()
 
 	deadline := time.Now().Add(timeout)
+	var lastAlbum *models.Album
+
 	for time.Now().Before(deadline) {
 		album := &models.Album{Id: id}
 		err := db.Model(album).WherePK().Select()
-		if err == nil {
+		if err == nil && album.Title == expectedTitle && album.Artist == expectedArtist && album.Price.Equal(expectedPrice) {
 			return album
 		}
-		if !errors.Is(err, pg.ErrNoRows) {
+		if err != nil && !errors.Is(err, pg.ErrNoRows) {
 			t.Fatalf("failed while checking album by id: %v", err)
 		}
 
+		lastAlbum = album
 		time.Sleep(200 * time.Millisecond)
+	}
+
+	if lastAlbum != nil {
+		t.Fatalf(
+			"timed out waiting for album id %d to match title=%q artist=%q price=%s; last seen title=%q artist=%q price=%s",
+			id,
+			expectedTitle,
+			expectedArtist,
+			expectedPrice.String(),
+			lastAlbum.Title,
+			lastAlbum.Artist,
+			lastAlbum.Price.String(),
+		)
 	}
 
 	t.Fatalf("timed out waiting for album with id %d", id)
