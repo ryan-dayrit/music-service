@@ -42,7 +42,7 @@ func TestKafkaConsumers_ConsumeAlbumMessages_Integration(t *testing.T) {
 		},
 		{
 			name:     "confluent",
-			assignor: "range",
+			assignor: "cooperative-sticky",
 			factory:  confluentconsumer.NewConsumerHandler,
 		},
 	}
