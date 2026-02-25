@@ -8,7 +8,7 @@ postgres:
   user: postgres
   db_name: practice
   ssl_mode: disable
-  password: umagos
+  password: postgres
   host: localhost
 
 kafka:
