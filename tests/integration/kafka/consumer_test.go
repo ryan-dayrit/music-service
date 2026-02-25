@@ -373,7 +373,7 @@ func waitForAlbumByID(
 	for time.Now().Before(deadline) {
 		album := &models.Album{Id: id}
 		err := db.Model(album).WherePK().Select()
-		if err == nil && album.Title == expectedTitle && album.Artist == expectedArtist && album.Price.Equal(expectedPrice) {
+		if err == nil && album.Title == expectedTitle && album.Artist == expectedArtist && album.Price.Equals(expectedPrice) {
 			return album
 		}
 		if err != nil && !errors.Is(err, pg.ErrNoRows) {
