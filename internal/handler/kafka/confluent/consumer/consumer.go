@@ -13,15 +13,20 @@ import (
 )
 
 const defaultParallelWorkers = 5
+const defaultAssignor = "cooperative-sticky"
 
 func newConsumerConfig(cfg kafka.Config) *ext_kafka.ConfigMap {
+	assignor := cfg.Assignor
+	if assignor == "" {
+		assignor = defaultAssignor
+	}
 	return &ext_kafka.ConfigMap{
 		"bootstrap.servers":             cfg.Brokers,
 		"group.id":                      cfg.ConsumerGroup,
 		"auto.offset.reset":             "earliest",
 		"enable.auto.commit":            false,
 		"enable.auto.offset.store":      false,
-		"partition.assignment.strategy": "cooperative-sticky",
+		"partition.assignment.strategy": assignor,
 		"session.timeout.ms":            30000,
 		"max.poll.interval.ms":          300000,
 	}
