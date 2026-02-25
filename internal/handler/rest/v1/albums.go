@@ -37,6 +37,24 @@ func NewAlbumsHandler(producerHandler kafka.ProducerHandler, repository orm.Repo
 // @Failure 400 {object} ErrorResponse
 // @Router /albums [post]
 func (h *albumsHandler) CreateAlbums(ctx *fiber.Ctx) error {
+	return h.handleAlbumsWrite(ctx)
+}
+
+// @Summary Upsert albums
+// @Description Queues multiple albums for asynchronous persistence.
+// @ID upsert-albums
+// @Tags albums
+// @Accept json
+// @Produce json
+// @Param albums body []pb.Album true "Album payload"
+// @Success 201 {array} pb.Album
+// @Failure 400 {object} ErrorResponse
+// @Router /albums [put]
+func (h *albumsHandler) UpsertAlbums(ctx *fiber.Ctx) error {
+	return h.handleAlbumsWrite(ctx)
+}
+
+func (h *albumsHandler) handleAlbumsWrite(ctx *fiber.Ctx) error {
 	newAlbums := []*pb.Album{}
 	if err := ctx.BodyParser(&newAlbums); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{

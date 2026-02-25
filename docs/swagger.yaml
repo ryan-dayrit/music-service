@@ -61,7 +61,7 @@ paths:
       consumes:
       - application/json
       description: Queues a single album for asynchronous persistence.
-      operationId: create-album
+      operationId: upsert-album
       parameters:
       - description: Album payload
         in: body
@@ -80,7 +80,7 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/v1.ErrorResponse'
-      summary: Create an album
+      summary: Upsert an album
       tags:
       - albums
   /albums:
@@ -137,7 +137,7 @@ paths:
       consumes:
       - application/json
       description: Queues multiple albums for asynchronous persistence.
-      operationId: create-albums
+      operationId: upsert-albums
       parameters:
       - description: Album payload
         in: body
@@ -160,7 +160,7 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/v1.ErrorResponse'
-      summary: Create albums
+      summary: Upsert albums
       tags:
       - albums
   /health:

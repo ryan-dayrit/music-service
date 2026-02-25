@@ -28,8 +28,8 @@ const docTemplate = `{
                 "tags": [
                     "albums"
                 ],
-                "summary": "Create an album",
-                "operationId": "create-album",
+                "summary": "Upsert an album",
+                "operationId": "upsert-album",
                 "parameters": [
                     {
                         "description": "Album payload",
@@ -136,8 +136,8 @@ const docTemplate = `{
                 "tags": [
                     "albums"
                 ],
-                "summary": "Create albums",
-                "operationId": "create-albums",
+                "summary": "Upsert albums",
+                "operationId": "upsert-albums",
                 "parameters": [
                     {
                         "description": "Album payload",
