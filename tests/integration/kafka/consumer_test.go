@@ -144,7 +144,7 @@ func TestKafkaConsumers_ConsumeAlbumMessages_Integration(t *testing.T) {
 			if updatedAlbum.Artist != updateAlbum.Artist {
 				t.Fatalf("expected updated artist %q, got %q", updateAlbum.Artist, updatedAlbum.Artist)
 			}
-			if !updatedAlbum.Price.Equal(expectedUpdatedPrice) {
+			if !updatedAlbum.Price.Equals(expectedUpdatedPrice) {
 				t.Fatalf("expected updated price 33.75, got %s", updatedAlbum.Price.String())
 			}
 		})
